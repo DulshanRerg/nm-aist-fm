@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Contact - {{ config.station_name }}{% endblock %}
+{% block content %}
+<section class="contact-section elementor-element elementor-element-60f804a animate-right" style="padding: 60px 0; background: url('{% static 'images/mandela-radio.png' %}') center center/cover no-repeat, #f7f7fa; margin-top: 10%; position: relative;">
+    <div style="position: absolute; inset: 0; width: 100%; height: 100%; backdrop-filter: blur(4px); z-index: 0;"></div>
+    <div class="section-content" style="max-width: 900px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: center; position: relative; z-index: 1;">
+        <div class="image-content" style="flex: 0 0 320px; text-align: center;">
+            <div class="contact-info-card" style="margin-top: 32px; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 24px 18px; font-size: 1.08rem; color: #222; text-align: left;">
+                <h3 style="font-size: 1.15rem; font-weight: 600; color: #0C2340; margin-bottom: 12px;">Contact Information</h3>
+                <div style="margin-bottom: 8px;"><i class="fa fa-map-marker" style="color: #FFD700; margin-right: 8px;"></i> Tengeru, Arusha - Tanzania</div>
+                <div style="margin-bottom: 8px;"><i class="fa fa-phone" style="color: #FFD700; margin-right: 8px;"></i> +255 272 970001</div>
+                <div style="margin-bottom: 8px;"><i class="fa fa-phone" style="color: #FFD700; margin-right: 8px;"></i> +255 272 970016</div>
+                <div style="margin-bottom: 8px;"><i class="fa fa-envelope" style="color: #FFD700; margin-right: 8px;"></i> info@wisefutures.co.tz</div>
+            </div>
+        </div>
+        <div class="form-content" style="flex: 1 1 340px; background: #fff; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 36px 32px;">
+            <p style="font-size: 1.15rem; color: #222; margin-bottom: 24px;">Nelson Mandela Media offers unique opportunities for partnership! Whether you're looking to increase brand visibility, drive engagement, or connect with new audiences, partnering with us provides a powerful platform to achieve your goals.</p>
+            <div class="contact-form">
+                <form method="post" action="{% url 'contact_api' %}" id="contactForm">
+                    {% csrf_token %}
+                    <div class="form-group" style="margin-bottom: 18px;">
+                        <input type="text" name="name" placeholder="Enter your name" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 18px;">
+                        <input type="email" name="email" placeholder="Enter email address" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 18px;">
+                        <textarea name="message" placeholder="Enter your message" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; min-height: 120px;"></textarea>
+                    </div>
+                    <button type="submit" class="elementor-button elementor-button-link elementor-size-sm" style="background: #FFD700; color: #0C2340; font-weight: 600; border-radius: 8px; padding: 12px 32px; font-size: 1.1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.10);">
+                        <span class="elementor-button-text">SEND MESSAGE</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+       const contactSection = document.querySelector('.contact-section');
+       contactSection.style.opacity = 0;
+       contactSection.style.transform = 'translateY(20px)';
+       setTimeout(() => {
+           contactSection.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+           contactSection.style.opacity = 1;
+           contactSection.style.transform = 'translateY(0)';
+       }, 100);
+
+       // Form submission
+       const contactForm = document.getElementById('contactForm');
+       if (contactForm) {
+           contactForm.addEventListener('submit', function(e) {
+               e.preventDefault();
+               const submitBtn = this.querySelector('button[type="submit"]');
+               const originalText = submitBtn.innerHTML;
+               submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+               submitBtn.disabled = true;
+               const formData = new FormData(this);
+               fetch(this.action, {
+                   method: 'POST',
+                   headers: {
+                       'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                   },
+                   body: formData
+               })
+               .then(response => response.json())
+               .then(data => {
+                   submitBtn.innerHTML = originalText;
+                   submitBtn.disabled = false;
+                   // Optionally show a message, but stay on contact.html
+                   if (data.success) {
+                       alert('Thank you for your message!');
+                       contactForm.reset();
+                   } else {
+                       alert(data.error || 'Failed to send message.');
+                   }
+               })
+               .catch(() => {
+                   submitBtn.innerHTML = originalText;
+                   submitBtn.disabled = false;
+                   alert('Failed to send message.');
+               });
+           });
+       }
+   });
+</script>
+{% endblock %}

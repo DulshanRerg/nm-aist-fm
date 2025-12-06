@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nelson Mandela Radio - This is Home{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+<style>
+  .animate-left {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: all 3s cubic-bezier(.77,0,.18,1);
+  }
+  .animate-right {
+    opacity: 0;
+    transform: translateX(60px);
+    transition: all 3s cubic-bezier(.77,0,.18,1);
+  }
+  .animated-in {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+  .back-to-top-arrow {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 9999;
+    background: #FFD700;
+    color: #0C2340;
+    border: none;
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .back-to-top-arrow.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ast-container">
+    <div class="elementor elementor-16">
+        <!-- Hero Section -->
+        <section class="hero-section elementor-element elementor-element-20e6f5a" style="position: relative; width: 100vw; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; min-height: 420px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;">
+                <img src="{% static 'images/mandela-radio.png' %}" alt="Mandela Radio" style="width: 100%; height: 100%; object-fit: cover; filter: blur(8px) brightness(0.7);">
+            </div>
+            <div class="hero-content" style="position: relative; z-index: 2; background: rgba(0,0,0,0.7); padding: 48px 36px; margin-top: 5%; border-radius: 24px; max-width: 700px; width: 100%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.18);">
+                <h1 class="elementor-heading-title elementor-size-default" style="color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); font-size: 3rem; font-weight: 700; margin-bottom: 18px;">Powered voice to bridge academia, industry, and society.</h1>
+                <div class="social-icons" style="margin: 20px 0; display: flex; justify-content: center; gap: 18px;">
+                    <a href="https://facebook.com/nelsonmandelaradio" target="_blank" class="social-icon" style="font-size: 1.7rem;"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://twitter.com/mandelaradio" target="_blank" class="social-icon" style="font-size: 1.7rem;"><i class="fab fa-twitter"></i></a>
+                    <a href="https://instagram.com/nelsonmandelaradio" target="_blank" class="social-icon" style="font-size: 1.7rem;"><i class="fab fa-instagram"></i></a>
+                    <a href="https://youtube.com/@nelsonmandelaradio" target="_blank" class="social-icon" style="font-size: 1.7rem;"><i class="fab fa-youtube"></i></a>
+                    <a href="https://tiktok.com/@mandelaradio" target="_blank" class="social-icon" style="font-size: 1.7rem;"><i class="fab fa-tiktok"></i></a>
+                </div>
+                <a href="{% url 'live_stream' %}" class="elementor-button elementor-button-link elementor-size-sm" style="background: #FFD700; color: #0C2340; font-weight: 600; border-radius: 10px; padding: 14px 36px; font-size: 1.25rem; box-shadow: 0 2px 12px rgba(0,0,0,0.14); margin-top: 12px;">
+                    <span class="elementor-button-text">Listen LIVE</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Nelson Mandela Radio Section -->
+        <section class="radio-section elementor-element elementor-element-6943fab animate-left" style="margin-top: 48px;">
+            <div class="section-content" style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: center;">
+                <div class="text-content" style="max-width: 480px;">
+                    <h2 class="animated-fast elementor-invisible elementor-heading-title" style="font-size: 2.2rem; font-weight: 700; color: #0C2340; margin-bottom: 18px;">Nelson Mandela Radio</h2>
+                    <p class="animated-fast elementor-invisible" style="font-size: 1.15rem; color: #f8f3f3; margin-bottom: 18px;">The Nelson Mandela Radio, an initiative of the Nelson Mandela African Institute of Science and Technology (NM-AIST), stands as a beacon of knowledge dissemination, innovation promotion, and societal progress. Established in response to the imperative need to bridge the gap between academia, industry, and society, this radio station embodies the essence of excellence in broadcasting, education, and outreach.</p>
+                </div>
+                <div class="image-content" style="flex: 0 0 520px; text-align: center;">
+                    <img src="{% static 'images/radio_bg.png' %}" alt="Nelson Mandela Radio" class="animated-fast elementor-invisible" style="width: 100%; max-width: 420px; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.18);">
+                </div>
+            </div>
+        </section>
+
+        <!-- Radio Frequencies Section -->
+        <section class="frequencies-section elementor-element elementor-element-647eede animate-right" style="position: relative; width: 100vw; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; background: #7e0404; padding: 60px 0; overflow: hidden;">
+            <div class="section-header" style="text-align: center; color: #fff; margin-bottom: 32px;">
+                <div class="icon-box animated-fast elementor-invisible">
+                    <h4 class="elementor-icon-box-title" style="font-size: 2rem; font-weight: 700;">Radio Frequencies</h4>
+                    <p style="font-size: 1.1rem;">Nelson Mandela Radio takes pride in its extensive radio frequencies across Tanzania, ensuring listeners can tune in wherever they are for a seamless listening experience.</p>
+                </div>
+            </div>
+            <div class="frequencies-grid" style="display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin-bottom: 48px;">
+                {% for freq in frequencies %}
+                <div class="frequency-card animated-fast elementor-invisible" style="background: #fff; color: #0C2340; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.13); padding: 32px 28px; min-width: 260px; max-width: 320px; flex: 1 1 260px; display: flex; flex-direction: column; align-items: center;">
+                    <div class="frequency-number" style="font-size: 2.2rem; font-weight: 700; color: #7e0404; margin-bottom: 8px;">
+                        <h5 style="margin: 0;">{{ freq.frequency }} MHz</h5>
+                    </div>
+                    <div class="frequency-location" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; color: #0C2340;">
+                        <h6 style="margin: 0;">{{ freq.get_full_location }}</h6>
+                    </div>
+                    <div class="frequency-slogan" style="font-size: 1rem; color: #555; margin-bottom: 16px;">
+                        <h6 style="margin: 0;">{{ freq.slogan }}</h6>
+                    </div>
+                    <div class="frequency-action">
+                        <a href="{% url 'live_stream' %}" class="elementor-button elementor-button-link elementor-size-sm" style="background: #FFD700; color: #7e0404; font-weight: 600; border-radius: 8px; padding: 10px 24px; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.10);">
+                            <span class="elementor-button-text">Listen LIVE</span>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="frequency-card" style="background: #fff; color: #0C2340; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.13); padding: 32px 28px; min-width: 260px; max-width: 320px; flex: 1 1 260px; display: flex; flex-direction: column; align-items: center;">
+                    <div class="frequency-number" style="font-size: 2.2rem; font-weight: 700; color: #7e0404; margin-bottom: 8px;">
+                        <h5 style="margin: 0;">98.9 MHz</h5>
+                    </div>
+                    <div class="frequency-location" style="font-size: 1rem; color:#0C2340; font-weight: 600;">
+                        <h6 style="margin: 0; color:#0C2340;">Arusha</h6>
+                    </div>
+                    <div class="frequency-slogan" style="font-size: 1rem; color: #555; margin-bottom: 16px;">
+                        <h6 style="margin: 0;">Mandela's Voice</h6>
+                    </div>
+                    <div class="frequency-action">
+                        <a href="{% url 'live_stream' %}" class="elementor-button elementor-button-link elementor-size-sm" style="background: #FFD700; color: #7e0404; font-weight: 600; border-radius: 8px; padding: 10px 24px; font-size: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.10);">
+                            <span class="elementor-button-text">Listen LIVE</span>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- HOW TO LISTEN -->
+            <div class="how-to-listen" style="margin-top: 24px;">
+                <h3 style="color: #fff; text-align: center; font-size: 2rem; font-weight: 700; margin-bottom: 32px;">Namna ya Kusikiliza</h3>
+                <div class="methods-grid" style="display: flex; flex-wrap: wrap; gap: 32px; justify-content: center;">
+                    <div class="method-card" style="background: #fff; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.13); padding: 32px 24px; min-width: 220px; max-width: 260px; flex: 1 1 220px; display: flex; flex-direction: column; align-items: center;">
+                        <i class="fas fa-radio fa-3x" style="color: #7e0404; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;">Kupitia Redio</h4>
+                        <p style="color: #444; text-align: center;">Pima masafa yetu kulingana na eneo lako</p>
+                    </div>
+                    <div class="method-card" style="background: #fff; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.13); padding: 32px 24px; min-width: 220px; max-width: 260px; flex: 1 1 220px; display: flex; flex-direction: column; align-items: center;">
+                        <i class="fas fa-mobile fa-3x" style="color: #7e0404; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;">Simu ya Mkononi</h4>
+                        <p style="color: #444; text-align: center;">Pakua App ya Radio ya Mandela</p>
+                    </div>
+                    <div class="method-card" style="background: #fff; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.13); padding: 32px 24px; min-width: 220px; max-width: 260px; flex: 1 1 220px; display: flex; flex-direction: column; align-items: center;">
+                        <i class="fas fa-desktop fa-3x" style="color: #7e0404; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;">Kompyuta</h4>
+                        <p style="color: #444; text-align: center;">Bofya "Sikiliza LIVE" hapa kwenye tovuti</p>
+                    </div>
+                    <div class="method-card" style="background: #fff; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.13); padding: 32px 24px; min-width: 220px; max-width: 260px; flex: 1 1 220px; display: flex; flex-direction: column; align-items: center;">
+                        <i class="fas fa-share-alt fa-3x" style="color: #7e0404; margin-bottom: 12px;"></i>
+                        <h4 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 8px;">Mitandao ya Kijamii</h4>
+                        <p style="color: #444; text-align: center;">Tufuatilie Instagram na Facebook</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nelson Mandela TV Section -->
+        <section class="tv-section elementor-element elementor-element-afb1535 animate-left">
+            <div class="section-content" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px;">
+                <div class="image-content" style="flex: 0 0 480px; text-align: center;">
+                    <img src="{% static 'images/mandela-tv.png' %}" alt="Nelson Mandela TV" class="animated-fast elementor-invisible" style="width: 100%; max-width: 480px; height: auto; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.18);">
+                </div>
+                <div class="text-content" style="max-width: 480px;">
+                    <div class="icon-box animated-fast elementor-invisible">
+                        <h4 class="elementor-icon-box-title">NELSON MANDELA TV</h4>
+                    </div>
+                    <p>Nelson Mandela TV delivers an unparalleled viewing experience with diverse programming that caters to every interest. From compelling news coverage and dramatic series to thrilling sports and entertaining reality shows.</p>
+                    <p>We ensure viewers are always informed and entertained. With our commitment to quality content and innovative storytelling, Nelson Mandela TV has become a trusted source of entertainment for audiences across the nation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Digital Platforms Section -->
+        <section class="digital-section elementor-element elementor-element-77d3ddb animate-left" style="position: relative; width: 100vw; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; min-height: 340px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <div style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;">
+                <img src="{% static 'images/digital-bg.jpg' %}" alt="Digital Platforms Background" style="width: 100%; height: 100%; object-fit: cover; filter: blur(5px) brightness(0.5);">
+            </div>
+            <div class="section-content" style="position: relative; z-index: 2; width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px;">
+                <div class="image-content">
+                    <img src="{% static 'images/digital-platforms.png' %}" alt="Digital Platforms" class="animated-fast elementor-invisible" style="max-width: 320px; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.18);">
+                </div>
+                <div class="text-content" style="color: #fff; max-width: 420px;">
+                    <div class="icon-box">
+                        <h5 class="elementor-icon-box-title">Join us, and discover why Nelson Mandela Radio is truly "Science for Life"</h5>
+                    </div>
+                    <div class="social-icons animated-fast elementor-invisible" style="margin-top: 18px;">
+                        <a href="https://facebook.com/nelsonmandelaradio" target="_blank" class="social-icon" style="font-size: 1.5rem; margin-right: 12px;"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/mandelaradio" target="_blank" class="social-icon" style="font-size: 1.5rem; margin-right: 12px;"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/nelsonmandelaradio" target="_blank" class="social-icon" style="font-size: 1.5rem; margin-right: 12px;"><i class="fab fa-instagram"></i></a>
+                        <a href="https://youtube.com/@NelsonMandelaFM" target="_blank" class="social-icon" style="font-size: 1.5rem; margin-right: 12px;"><i class="fab fa-youtube"></i></a>
+                        <a href="https://tiktok.com/@mandelaradio" target="_blank" class="social-icon" style="font-size: 1.5rem;"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+<script>
+// Homepage specific scripts
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation trigger
+    const animatedElements = document.querySelectorAll('.elementor-invisible');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                entry.target.classList.remove('elementor-invisible');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    animatedElements.forEach(element => {
+        observer.observe(element);
+    });
+
+    // Animate in from left/right
+    const leftEls = document.querySelectorAll('.animate-left');
+    const rightEls = document.querySelectorAll('.animate-right');
+    const observerLeftRight = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated-in');
+                observerLeftRight.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    leftEls.forEach(el => observerLeftRight.observe(el));
+    rightEls.forEach(el => observerLeftRight.observe(el));
+
+    // Back to top arrow
+    const arrow = document.createElement('button');
+    arrow.className = 'back-to-top-arrow';
+    arrow.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    document.body.appendChild(arrow);
+    arrow.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 300) {
+            arrow.classList.add('visible');
+        } else {
+            arrow.classList.remove('visible');
+        }
+    });
+});
+</script>
+{% endblock %}

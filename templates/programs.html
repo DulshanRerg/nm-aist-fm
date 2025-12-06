@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h3 class="section-title">Programs Schedule</h3>
+
+    <table class="table table-striped">
+        <tr style="background:#F6C21E; color:#0A0A0A;">
+            <th>Program</th>
+            <th>Host</th>
+            <th>Day</th>
+            <th>Time</th>
+        </tr>
+
+        {% for p in schedule %}
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.host }}</td>
+            <td>{{ p.day }}</td>
+            <td>{{ p.start_time }} – {{ p.end_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}

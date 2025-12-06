@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    {% include 'includes/head.html' %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body itemtype='https://schema.org/WebPage' itemscope='itemscope' class="{% block body_class %}home wp-singular page-template page-template-elementor_header_footer page wp-theme-astra ast-desktop ast-page-builder-template ast-no-sidebar astra-4.6.9 ast-single-post ast-replace-site-logo-transparent ast-inherit-site-logo-transparent ast-theme-transparent-header ast-hfb-header elementor-default elementor-template-full-width elementor-page{% endblock %}">
+
+<div class="hfeed site" id="page">
+    {% include 'includes/header.html' %}
+    
+    <div id="content" class="site-content">
+        {% block content %}{% endblock %}
+    </div><!-- #content -->
+    
+    {% include 'includes/footer.html' %}
+</div><!-- #page -->
+
+{% include 'includes/scripts.html' %}
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

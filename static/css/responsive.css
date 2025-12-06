@@ -1,0 +1,135 @@
+/* Responsive CSS */
+@media (max-width: 1200px) {
+    h1 { font-size: 80px; }
+    h2 { font-size: 60px; }
+    h3 { font-size: 50px; }
+    
+    .ast-container {
+        max-width: 1140px;
+    }
+}
+
+@media (max-width: 992px) {
+    #ast-desktop-header {
+        display: none;
+    }
+    
+    #ast-mobile-header {
+        display: block;
+    }
+    
+    .ast-mobile-header-content {
+        display: none;
+    }
+    
+    .ast-mobile-header-content.active {
+        display: block;
+    }
+    
+    .section-content {
+        grid-template-columns: 1fr;
+    }
+    
+    h1 { font-size: 70px; }
+    h2 { font-size: 50px; }
+    h3 { font-size: 40px; }
+    h4 { font-size: 30px; }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 80vh;
+    }
+    
+    h1 { font-size: 50px; }
+    h2 { font-size: 40px; }
+    h3 { font-size: 30px; }
+    h4 { font-size: 24px; }
+    h5 { font-size: 20px; }
+    h6 { font-size: 18px; }
+    
+    section {
+        padding: 60px 0;
+    }
+    
+    .frequencies-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-icons {
+        flex-wrap: wrap;
+    }
+    
+    .main-header-menu {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .ast-container {
+        padding: 0 15px;
+    }
+    
+    h1 { font-size: 40px; }
+    h2 { font-size: 32px; }
+    h3 { font-size: 28px; }
+    
+    .hero-section {
+        padding-top: 80px;
+    }
+    
+    .elementor-button {
+        padding: 10px 20px;
+        font-size: 13px;
+    }
+    
+    .site-footer {
+        padding-top: 40px;
+    }
+    
+    .footer-logo {
+        max-width: 250px;
+    }
+}
+
+/* Mobile Menu Styles */
+@media (max-width: 992px) {
+    .site-header {
+        position: fixed;
+        background: var(--ast-global-color-5);
+    }
+    
+    .hero-section {
+        padding-top: 150px;
+    }
+    
+    .ast-mobile-header-content .main-header-menu {
+        flex-direction: column;
+        background: var(--ast-global-color-5);
+        padding: 20px;
+    }
+    
+    .ast-mobile-header-content .menu-item {
+        margin-bottom: 10px;
+    }
+    
+    .ast-mobile-header-content .menu-item a {
+        display: block;
+        padding: 10px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .site-header,
+    .site-footer,
+    .elementor-button {
+        display: none;
+    }
+    
+    body {
+        color: #000;
+        background: #fff;
+    }
+}

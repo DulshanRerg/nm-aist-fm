@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - Nelson Mandela Radio{% endblock %}
+
+{% block content %}
+<div class="ast-container">
+    <div class="about-page">
+        <!-- Hero Section -->
+        <section class="about-hero" style="text-align: center; padding: 80px 0; background: url('{% static 'images/mission-bg.png' %}') center center/cover no-repeat, linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7));">
+            <h1 style="font-size: 60px; color: #FFD700; margin-bottom: 20px; text-shadow: 2px 2px 12px rgba(0,0,0,0.7);">Our Mission</h1>
+            <p class="subtitle" style="font-size: 24px; color: #fff; margin-bottom: 0;">Empowering Society Through Science, Technology, and Innovation</p>
+        </section>
+
+        <!-- Mission and Objectives -->
+        <section class="mission-objectives">
+            <div class="section-content" style="max-width: 900px; margin: 0 auto;">
+                <div class="text-content" style="margin-bottom: 40px; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 32px 28px;">
+                    <h2 style="color: #0C2340; font-size: 2rem; font-weight: 700; margin-bottom: 18px;">Mission of Nelson Mandela Radio</h2>
+                    <p style="font-size: 1.15rem; color: #222;">To provide professional broadcasting services that serve as platforms for promoting science and technology solutions. Through informative, educational, and entertaining programming, the station aims to enrich the masses with accurate, balanced, and transparent content, thereby fostering a culture of scientific inquiry and technological advancement.</p>
+                    <br>
+                    <p style="font-size: 1.15rem; color: black;">In essence, the Nelson Mandela Radio embodies the ethos of NM-AIST, serving as a catalyst for excellence in teaching, research, and outreach in the fields of water, sanitation, and energy security. By fulfilling its mission and objectives, the station not only informs and educates but also inspires, empowers, and drives positive change, contributing to the advancement of science, technology, and society as a whole.</p>
+                </div>
+                <div class="objectives-list" style="margin-bottom: 32px; background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 32px 28px;">
+                    <h2 style="color: #0C2340; font-size: 2rem; font-weight: 700; margin-bottom: 18px;">Objectives</h2>
+                    <ul style="font-size: 1.15rem; line-height: 1.7; margin-top: 24px; color: black;">
+                        <li style="margin-bottom: 18px;"><strong>Inform, Educate, and Entertain:</strong> Disseminate high-quality content in Science and Technology, upholding editorial integrity and ensuring accuracy, fairness, and balance to foster understanding and appreciation of scientific advancements.</li>
+                        <li style="margin-bottom: 18px;"><strong>Facilitate Research Collaboration:</strong> Serve as a platform for researchers to showcase outputs and address developmental challenges, fostering collaboration and innovation for impactful solutions.</li>
+                        <li style="margin-bottom: 18px;"><strong>Promote Public-Private-Academia Linkages:</strong> Act as a catalyst for linkages between public, private, and academic sectors, facilitating exchange of ideas, resources, and expertise for societal progress.</li>
+                        <li style="margin-bottom: 0;"><strong>Cultivate Innovation Culture:</strong> Nurture a culture of innovation by providing a platform for entrepreneurs, thinkers, and startups to showcase ideas, inspire creativity, and catalyze transformation of ideas into impactful solutions.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!-- Staff Members Section -->
+        <div class="team-section">
+            <h2>Meet Our Team</h2>
+            <div class="section-content ast-container">
+                <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4 mt-3">
+                    {% for member in team_members %}
+                    <div class="col d-flex align-items-stretch">
+                        <div class="team-member card h-100 text-center shadow-sm border-0 rounded-3 p-4">
+                            {% if member.photo %}
+                            <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="mb-3" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'images/default-profile.png' %}" alt="{{ member.name }}" class="mb-3" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+                            {% endif %}
+                            <h5 class="member-name mb-1">{{ member.name }}</h5>
+                            <p class="position mb-2" style="color: #FFD700; font-weight: bold;">{{ member.position }}</p>
+                            <p class="member-bio" style="font-size: 0.95rem; color: #555;">{{ member.bio|truncatechars:100 }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+.about-page {
+    padding: 60px 0;
+}
+
+.about-hero {
+    text-align: center;
+    padding: 80px 0;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7));
+}
+
+.about-hero h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 24px;
+    color: var(--ast-global-color-3);
+}
+
+.mission-objectives .text-content, .mission-objectives .objectives-list {
+    margin-bottom: 40px;
+    padding: 32px 28px;
+    background: var(--ast-global-color-5);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+
+.mission-objectives h2 {
+    color: var(--ast-global-color-1);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.mission-objectives p, .mission-objectives ul {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--ast-global-color-3);
+}
+
+.team-section {
+    margin-top: 30px;
+    background: #7e0404;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    text-align: center;
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.team-member .position {
+    color: var(--ast-global-color-1);
+    font-weight: bold;
+}
+
+.contact-cta {
+    text-align: center;
+    padding: 60px;
+    background: var(--ast-global-color-5);
+    border-radius: 10px;
+    margin-top: 60px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .about-hero h1 {
+        font-size: 40px;
+    }
+    
+    .subtitle {
+        font-size: 18px;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+{% endblock %}

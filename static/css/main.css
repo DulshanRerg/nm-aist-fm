@@ -1,0 +1,333 @@
+/* Main CSS - Core styles */
+:root {
+    --ast-global-color-0: #f3c242;
+    --ast-global-color-1: #f2b827;
+    --ast-global-color-2: #ffffff;
+    --ast-global-color-3: rgba(255,255,255,0.8);
+    --ast-global-color-4: #000000;
+    --ast-global-color-5: #131313;
+    --ast-global-color-6: #F2F5F7;
+    --ast-global-color-7: #131313;
+    --ast-global-color-8: #000000;
+    --ast-border-color: #dddddd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ast-global-color-2);
+    background-color: var(--ast-global-color-4);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fjalla One', sans-serif;
+    font-weight: 400;
+    color: var(--ast-global-color-0);
+}
+
+h1 {
+    font-size: 90px;
+    line-height: 1.4;
+}
+
+h2 {
+    font-size: 70px;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: 60px;
+    line-height: 1.3;
+}
+
+h4 {
+    font-size: 40px;
+    line-height: 1.2;
+}
+
+h5 {
+    font-size: 36px;
+    line-height: 1.2;
+}
+
+h6 {
+    font-size: 24px;
+    line-height: 1.25;
+}
+
+a {
+    color: var(--ast-global-color-0);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--ast-global-color-1);
+}
+
+/* Header Styles */
+.site-header {
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 25px 0;
+}
+
+.site-branding .custom-logo {
+    max-width: 120px;
+    height: auto;
+}
+
+.main-header-menu {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.main-header-menu .menu-item a {
+    color: var(--ast-global-color-3);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.main-header-menu .menu-item a:hover,
+.main-header-menu .current-menu-item a {
+    color: var(--ast-global-color-0);
+}
+
+/* Mobile Header */
+#ast-mobile-header {
+    display: none;
+}
+
+.menu-toggle {
+    background: transparent;
+    border: 2px solid var(--ast-global-color-0);
+    color: var(--ast-global-color-0);
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Content Area */
+.site-content {
+    min-height: calc(100vh - 400px);
+}
+
+.ast-container {
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: 
+        linear-gradient(rgba(236, 232, 232, 0.8), rgba(185, 179, 179, 0.7)),
+        url("{% static 'images/mandela-radio.png' %}") center/cover no-repeat;
+    background-attachment: fixed;
+    padding-top: 100px;
+}
+
+.hero-content h1 {
+    margin-bottom: 30px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ast-global-color-0);
+    color: var(--ast-global-color-5);
+    border-radius: 50%;
+    font-size: 18px;
+}
+
+.social-icon:hover {
+    background: var(--ast-global-color-1);
+    transform: translateY(-3px);
+}
+
+/* Section Styles */
+section {
+    padding: 100px 0;
+}
+
+.section-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+/* Button Styles */
+.elementor-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background: transparent;
+    color: var(--ast-global-color-0);
+    border: 2px solid var(--ast-global-color-0);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.elementor-button:hover {
+    background: var(--ast-global-color-0);
+    color: var(--ast-global-color-5);
+}
+
+/* Frequencies Grid */
+.frequencies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.frequency-card {
+    background: var(--ast-global-color-5);
+    padding: 30px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    color: #0C2340;
+}
+
+.frequency-card:hover {
+    border-color: var(--ast-global-color-0);
+}
+
+.frequency-number h5 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.frequency-location h6 {
+    color: #0C2340;;
+    margin-bottom: 10px;
+}
+
+.frequency-slogan h6 {
+    color: var(--ast-global-color-0);
+    margin-bottom: 20px;
+}
+
+/* Icon Box */
+.elementor-icon-box-title {
+    margin-bottom: 15px;
+}
+
+/* Form Styles */
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 12px;
+    background: var(--ast-global-color-5);
+    border: 1px solid var(--ast-border-color);
+    color: var(--ast-global-color-2);
+    font-family: 'Raleway', sans-serif;
+}
+
+.contact-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* Footer Styles */
+.site-footer {
+    background-color: var(--ast-global-color-5);
+    padding-top: 60px;
+}
+
+.site-above-footer-wrap {
+    padding-bottom: 60px;
+}
+
+.footer-logo {
+    max-width: 354px;
+    height: auto;
+    margin-bottom: 30px;
+}
+
+.ast-footer-social-wrap {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.ast-footer-social-wrap .footer-social-item {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ast-global-color-0);
+    font-size: 20px;
+}
+
+.ast-footer-social-wrap .footer-social-item:hover {
+    color: var(--ast-global-color-1);
+}
+
+.site-below-footer-wrap {
+    border-top: 1px solid var(--ast-global-color-0);
+    padding: 20px 0;
+    text-align: center;
+}
+
+.ast-footer-copyright p {
+    color: var(--ast-global-color-3);
+    font-size: 14px;
+}
+
+/* Animation Classes */
+.elementor-invisible {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.animated-fast {
+    transition: all 0.3s ease;
+}

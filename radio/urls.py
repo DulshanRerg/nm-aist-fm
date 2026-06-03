@@ -5,6 +5,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('live_stream/', views.live_stream, name='live_stream'),
+    path('stream/', views.stream_proxy, name='stream'),
     path('news/', views.news_list, name='news_list'),
     path('news/<slug:slug>/', views.news_detail, name='news_detail'),
     path('programs/', views.programs, name='programs'),

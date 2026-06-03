@@ -199,7 +199,7 @@
     }
 
     /* Now playing animations */
-    
+
 
     .song-title {
         animation: pulse 2s infinite;
@@ -218,7 +218,7 @@
         box-shadow: 0px 3px 12px rgba(0,0,0,0.5);
         display: inline-block;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-       
+
     }
 
     .how-to-listen {
@@ -314,7 +314,7 @@
         <h1>Listen Nelson Mandela Radio</h1>
         <p>Get stream 24/7</p>
     </div>
-    
+
     <div class="live-content">
         <!-- PLAYER CARD -->
         <div class="radio-player">
@@ -332,7 +332,7 @@
                 <button class="play-btn" id="play-btn">
                     <i class="fa-solid fa-play" id="play-icon"></i>
                 </button>
-                
+
                 <button class="volume-btn" id="mute-btn">
                     <i class="fas fa-volume-up" id="volume-icon"></i>
                 </button>
@@ -355,7 +355,7 @@
         <!-- SIMPLE PROGRAM LIST -->
         <div class="current-program">
             <h3>Our Schedule</h3>
-            
+
             {% if all_programs %}
                 <div class="programs-list">
                     {% for program in all_programs %}
@@ -382,7 +382,7 @@
             {% else %}
                 <p>Hakuna vipindi vilivyopangwa bado.</p>
             {% endif %}
-        </div> 
+        </div>
 </div>
 {% endblock %}
 
@@ -396,14 +396,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const volumeIcon = document.getElementById('volume-icon');
     const volumeSlider = document.getElementById('volume-slider');
     const statusText = document.getElementById('status-text');
-    
+
     // Stream URL from Django - use proxy for development to bypass CORS
     let streamUrl = "{% if stream %}{{ stream.stream_url }}{% else %}/static/audio/default-stream.mp3{% endif %}";
     // If running on localhost, use the proxy endpoint
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         streamUrl = '/dev-stream/';
     }
-    
+
     // Audio player
     let audio = null;
     let isPlaying = false;
@@ -418,12 +418,12 @@ document.addEventListener('DOMContentLoaded', function() {
             audio.volume = currentVolume;
             audio.preload = 'none';
             audio.crossOrigin = 'anonymous'; // Important for some streams
-            
+
             // Update volume slider to match initial volume
             if (volumeSlider) {
                 volumeSlider.value = currentVolume * 100;
             }
-            
+
             // Event listeners for audio
             audio.addEventListener('playing', onAudioPlaying);
             audio.addEventListener('pause', onAudioPaused);
@@ -431,11 +431,11 @@ document.addEventListener('DOMContentLoaded', function() {
             audio.addEventListener('error', onAudioError);
             audio.addEventListener('waiting', onAudioWaiting);
             audio.addEventListener('canplay', onAudioCanPlay);
-            
+
             console.log('Player initialized with stream:', streamUrl);
         }
     }
-    
+
     // Audio event handlers
     function onAudioPlaying() {
         console.log('Audio is now playing');
@@ -443,27 +443,27 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePlayButton(true);
         updateStatus('Playing LIVE radio');
     }
-    
+
     function onAudioPaused() {
         console.log('Audio paused');
         isPlaying = false;
         updatePlayButton(false);
         updateStatus('Paused');
     }
-    
+
     function onAudioEnded() {
         console.log('Audio ended');
         isPlaying = false;
         updatePlayButton(false);
         updateStatus('Stream ended');
     }
-    
+
     function onAudioError(e) {
         console.error('Audio error:', e, audio.error);
         isPlaying = false;
         updatePlayButton(false);
         updateStatus('Error loading stream');
-        
+
         // More detailed error information
         switch(audio.error.code) {
             case audio.error.MEDIA_ERR_ABORTED:
@@ -482,17 +482,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateStatus('Error playing stream');
         }
     }
-    
+
     function onAudioWaiting() {
         console.log('Audio buffering...');
         updateStatus('Buffering...');
     }
-    
+
     function onAudioCanPlay() {
         console.log('Audio can play');
         updateStatus('Ready to play');
     }
-    
+
     // Update play button state
     function updatePlayButton(playing) {
         if (playing) {
@@ -507,12 +507,12 @@ document.addEventListener('DOMContentLoaded', function() {
             playBtn.setAttribute('aria-label', 'Play radio');
         }
     }
-    
+
     // Update status text
     function updateStatus(text) {
         if (statusText) {
             statusText.textContent = text;
-            
+
             // Add color based on status
             if (text.includes('Error') || text.includes('unavailable')) {
                 statusText.style.color = '#ff4444';
@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
+
     // Update mute button state
     function updateMuteButton(muted) {
         if (muted) {
@@ -538,16 +538,16 @@ document.addEventListener('DOMContentLoaded', function() {
             muteBtn.setAttribute('aria-label', 'Mute radio');
         }
     }
-    
+
     // Play/Pause button click
     playBtn.addEventListener('click', function() {
         initPlayer();
-        
+
         if (!audio.src || audio.src.includes('default-stream.mp3')) {
             updateStatus('Stream URL not configured');
             return;
         }
-        
+
         if (isPlaying) {
             // Currently playing, so pause
             audio.pause();
@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             updatePlayButton(true); // Switch icon immediately on click
             const playPromise = audio.play();
-            
+
             if (playPromise !== undefined) {
                 playPromise
                     .then(() => {
@@ -567,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         isPlaying = false;
                         updatePlayButton(false); // Revert icon if playback fails
                         updateStatus('Click to play');
-                        
+
                         // User-friendly error messages
                         if (error.name === 'NotAllowedError') {
                             alert('Please click the play button again to start playback, or check your browser permissions.');
@@ -578,19 +578,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Mute/Unmute button click
     muteBtn.addEventListener('click', function() {
         if (!audio) {
             initPlayer();
         }
-        
+
         isMuted = !isMuted;
         audio.muted = isMuted;
         updateMuteButton(isMuted);
-        
+
         updateStatus(isMuted ? 'Volume muted' : 'Volume unmuted');
-        
+
         // Clear status after 2 seconds if playing
         if (isPlaying) {
             setTimeout(() => {
@@ -598,16 +598,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         }
     });
-    
+
     // Volume slider
     volumeSlider.addEventListener('input', function() {
         if (!audio) {
             initPlayer();
         }
-        
+
         currentVolume = this.value / 100;
         audio.volume = currentVolume;
-        
+
         // Update mute state if volume is 0
         if (currentVolume === 0 && !isMuted) {
             isMuted = true;
@@ -618,7 +618,7 @@ document.addEventListener('DOMContentLoaded', function() {
             audio.muted = false;
             updateMuteButton(false);
         }
-        
+
         // Show volume level in status
         if (currentVolume === 0) {
             updateStatus('Volume muted');
@@ -632,10 +632,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Initialize player on page load
     initPlayer();
-    
+
     // Add keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         // Spacebar to play/pause
@@ -643,18 +643,18 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             playBtn.click();
         }
-        
+
         // M key to mute/unmute
         if (e.code === 'KeyM' && !e.target.matches('input, textarea')) {
             e.preventDefault();
             muteBtn.click();
         }
     });
-    
+
     // Update play button tooltip
     playBtn.title = "Play/Pause (Spacebar)";
     muteBtn.title = "Mute/Unmute (M key)";
-    
+
 });
 </script>
 {% endblock %}

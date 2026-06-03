@@ -16,7 +16,7 @@ def home(request):
     featured_news = News.objects.filter(is_featured=True, is_published=True)[:3]
     current_programs = Program.objects.filter(is_active=True, is_live=True)[:3]
     site_settings = SiteSetting.load()
-    
+
     context = {
         'frequencies': frequencies,
         'featured_news': featured_news,
@@ -42,10 +42,10 @@ def live_stream(request):
     stream = LiveStream.objects.filter(is_active=True).first()
     current_program = Program.objects.filter(is_active=True, is_live=True).first()
     site_settings = SiteSetting.load()
-    
+
     # Get ALL active programs
     all_programs = Program.objects.filter(is_active=True).order_by('order', 'start_time')
-    
+
     # Group programs by day
     programs_by_day = {}
     for program in all_programs:
@@ -68,13 +68,13 @@ def live_stream(request):
             if program.days not in programs_by_day:
                 programs_by_day[program.days] = []
             programs_by_day[program.days].append(program)
-    
+
     context = {
         'stream': stream,
         'current_program': current_program,
-        'all_programs': all_programs, 
-        'programs_by_day': programs_by_day, 
-        'day_choices': dict(Program.DAY_CHOICES), 
+        'all_programs': all_programs,
+        'programs_by_day': programs_by_day,
+        'day_choices': dict(Program.DAY_CHOICES),
         'site_settings': site_settings,
         'page_title': f'Listen Live - {site_settings.site_name}'
     }
@@ -83,19 +83,19 @@ def live_stream(request):
 def news_list(request):
     """News listing page"""
     news_list = News.objects.filter(is_published=True, publish_date__lte=timezone.now())
-    
+
     # Filter by category if provided
     category = request.GET.get('category')
     if category:
         news_list = news_list.filter(category=category)
-    
+
     # Pagination
     paginator = Paginator(news_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     site_settings = SiteSetting.load()
-    
+
     context = {
         'page_obj': page_obj,
         'category': category,
@@ -108,18 +108,18 @@ def news_list(request):
 def news_detail(request, slug):
     """News detail page"""
     news = get_object_or_404(News, slug=slug, is_published=True)
-    
+
     # Increment view count
     news.increment_views()
-    
+
     # Get related news
     related_news = News.objects.filter(
-        category=news.category, 
+        category=news.category,
         is_published=True
     ).exclude(id=news.id)[:3]
-    
+
     site_settings = SiteSetting.load()
-    
+
     context = {
         'news': news,
         'related_news': related_news,
@@ -131,7 +131,7 @@ def news_detail(request, slug):
 def programs(request):
     """Programs listing page"""
     programs_list = Program.objects.filter(is_active=True).order_by('order', 'start_time')
-    
+
     # Group by day
     programs_by_day = {}
     for program in programs_list:
@@ -154,9 +154,9 @@ def programs(request):
             if program.days not in programs_by_day:
                 programs_by_day[program.days] = []
             programs_by_day[program.days].append(program)
-    
+
     site_settings = SiteSetting.load()
-    
+
     context = {
         'programs_by_day': programs_by_day,
         'day_choices': dict(Program.DAY_CHOICES),
@@ -173,19 +173,19 @@ def contact(request):
         data = json.loads(request.body) if request.body else request.POST
     except:
         data = request.POST
-    
+
     name = data.get('name', '').strip()
     email = data.get('email', '').strip()
     subject = data.get('subject', '').strip() or 'Contact Form Message'
     message = data.get('message', '').strip()
-    
+
     # Validation
     if not email or not subject or not message:
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'error': 'Please fill in all required fields.'
         })
-    
+
     # Save to database
     contact_message = ContactMessage.objects.create(
         name=name or email,  # fallback to email if name not provided
@@ -195,7 +195,7 @@ def contact(request):
         ip_address=request.META.get('REMOTE_ADDR'),
         user_agent=request.META.get('HTTP_USER_AGENT', '')
     )
-    
+
     # Send email to admin
     try:
         send_mail(
@@ -207,16 +207,16 @@ def contact(request):
         )
     except Exception as e:
         return JsonResponse({'success': False, 'error': 'Failed to send email. Please try again later.'})
-    
+
     return JsonResponse({
-        'success': True, 
+        'success': True,
         'message': 'Thank you for your message. We will get back to you soon.'
     })
 
 def contact_page(request):
     """Contact page view"""
     site_settings = SiteSetting.load()
-    
+
     context = {
         'site_settings': site_settings,
         'page_title': f'Contact Us - {site_settings.site_name}'
@@ -226,17 +226,17 @@ def contact_page(request):
 def frequencies_json(request):
     """API endpoint for frequencies in JSON format"""
     frequencies = list(Frequency.objects.filter(is_active=True).values(
-        'frequency', 
-        'location', 
+        'frequency',
+        'location',
         'slogan',
         'description'
     ))
-    
+
     # Convert Decimal to string for JSON serialization
     for freq in frequencies:
         freq['frequency'] = str(freq['frequency'])
         freq['location_name'] = dict(Frequency.LOCATION_CHOICES).get(freq['location'], freq['location'])
-    
+
     return JsonResponse(frequencies, safe=False)
 
 def get_current_program(request):
@@ -244,13 +244,13 @@ def get_current_program(request):
     now = timezone.now()
     current_time = now.time()
     current_day = now.strftime('%A').lower()
-    
+
     # Find current program
     current_program = Program.objects.filter(
         is_active=True,
         is_live=True
     ).first()
-    
+
     if current_program:
         program_data = {
             'title': current_program.title,
@@ -269,7 +269,7 @@ def get_current_program(request):
             'end_time': '23:59',
             'image_url': None
         }
-    
+
     return JsonResponse(program_data)
 
 
@@ -279,10 +279,10 @@ def now_playing_api(request):
     try:
         # Try to fetch from your stream metadata
         # This is a placeholder - you'll need to integrate with your stream server
-        
+
         # For Icecast/Shoutcast streams, you might fetch metadata from:
         # stream_url + '/status-json.xsl' or similar
-        
+
         data = {
             "title": "Muziki Bora wa Kizazi Kipya",
             "artist": "DJ Mandela",
@@ -301,7 +301,7 @@ def now_playing_api(request):
             "bitrate": 128,
             "format": "audio/mp3"
         }
-    
+
     return JsonResponse(data)
 
 
@@ -312,7 +312,7 @@ def get_members(request):
         'bio',
         'profile_picture'
     )
-    
+
     member_list = []
     for member in members:
         member_data = {
@@ -321,11 +321,11 @@ def get_members(request):
             'photo_url': member['profile_picture'].url if member['profile_picture'] else None
         }
         member_list.append(member_data)
-    
+
     data = {
         'members': member_list
     }
-    
+
     return JsonResponse(data)
 
 @require_GET

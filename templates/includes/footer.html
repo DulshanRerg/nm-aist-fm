@@ -1,41 +1,52 @@
 {% load static %}
-<footer class="site-footer" id="colophon" style="background: #0C2340; color: #fff; padding-top: 40px;">
-    <!-- Above Footer -->
-    <div class="site-above-footer-wrap" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 40px; padding-bottom: 30px;">
-        <div class="footer-logo-area" style="flex: 0 0 220px; text-align: center;">
-            <img width="180" height="120" src="{% static 'images/footer-logo.png' %}" class="footer-logo" alt="Nelson Mandela Radio" style="border-radius: 12px;">
-        </div>
-        <div class="footer-description-area" style="max-width: 500px;">
-            <p style="font-size: 1.1rem; line-height: 1.7; color: #e0e0e0; margin: 0;">Nelson Mandela Radio is a leading media company offering premier entertainment, news, and information across radio, TV, and digital platforms. Renowned for our diverse portfolio and innovative approach, we captivate audiences with engaging content and immersive experiences that honor the legacy of Nelson Mandela.</p>
-        </div>
-    </div>
+<footer class="site-footer" id="colophon">
+  <div class="ast-container">
+    <div class="footer-inner">
 
-    <!-- Primary Footer -->
-    <div class="site-primary-footer-wrap" style="border-top: 1px solid #222; padding: 30px 0 20px 0;">
-        <div class="footer-bar-navigation" style="text-align: center; margin-bottom: 18px;">
-            <nav class="footer-navigation" id="footer-site-navigation" aria-label="Site Navigation">
-                <ul id="astra-footer-menu" style="display: inline-flex; gap: 32px; list-style: none; padding: 0; margin: 0;">
-                    <li class="menu-item"><a href="{% url 'home' %}" style="color: #FFD700; font-weight: 600; text-decoration: none;">Home</a></li>
-                    <li class="menu-item"><a href="{% url 'about' %}" style="color: #FFD700; font-weight: 600; text-decoration: none;">About</a></li>
-                    <li class="menu-item"><a href="{% url 'contact' %}" style="color: #FFD700; font-weight: 600; text-decoration: none;">Contact</a></li>
-                </ul>
-            </nav>
+      <!-- Brand column -->
+      <div class="footer-brand">
+        <img src="{% static 'images/footer-logo.png' %}" alt="Nelson Mandela Radio">
+        <p>An initiative of Nelson Mandela African Institute of Science and Technology (NM-AIST). Bridging academia, industry, and society through the power of broadcast.</p>
+        <div class="footer-socials" style="margin-top:20px;">
+          <a href="https://web.facebook.com/profile.php?id=61579692771523" class="social-icon" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://x.com/FmMandela95452" class="social-icon" target="_blank" aria-label="Twitter/X"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/nelson_mandelafm/" class="social-icon" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://youtube.com/@NelsonMandelaFM" class="social-icon" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="https://tiktok.com/@nelsonmandelafm" class="social-icon" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
         </div>
-        <div class="footer-social-inner-wrap" style="display: flex; justify-content: center; gap: 18px; margin-bottom: 10px;">
-            <a href="https://facebook.com/nelsonmandelaradio" aria-label="Facebook" target="_blank" rel="noopener noreferrer" style="color: #fff; font-size: 1.5rem;"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://twitter.com/mandelaradio" aria-label="X" target="_blank" rel="noopener noreferrer" style="color: #fff; font-size: 1.5rem;"><i class="fab fa-twitter"></i></a>
-            <a href="https://instagram.com/nelsonmandelaradio" aria-label="Instagram" target="_blank" rel="noopener noreferrer" style="color: #fff; font-size: 1.5rem;"><i class="fab fa-instagram"></i></a>
-            <a href="https://youtube.com/@nelsonmandelaradio" aria-label="YouTube" target="_blank" rel="noopener noreferrer" style="color: #fff; font-size: 1.5rem;"><i class="fab fa-youtube"></i></a>
-            <a href="https://tiktok.com/@mandelaradio" aria-label="TikTok" target="_blank" rel="noopener noreferrer" style="color: #fff; font-size: 1.5rem;"><i class="fab fa-tiktok"></i></a>
-        </div>
-    </div>
+      </div>
 
-    <!-- Below Footer -->
-    <div class="site-below-footer-wrap" style="border-top: 1px solid #222; padding: 16px 0 0 0; text-align: center;">
-        <div class="ast-builder-layout-element ast-flex site-footer-focus-item ast-footer-copyright">
-            <div class="ast-footer-copyright" style="font-size: 1rem; color: #bbb;">
-                <p style="margin: 0;">Copyright &copy; {% now "Y" %} Nelson Mandela Radio. All rights reserved.</p>
-            </div>
-        </div>
+      <!-- Quick links -->
+      <div>
+        <p class="footer-heading">Navigate</p>
+        <ul class="footer-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'about' %}">Who We Are</a></li>
+          <li><a href="{% url 'live_stream' %}">Listen Live</a></li>
+          <!-- <li><a href="{% url 'programs' %}">Programs</a></li>
+          <li><a href="{% url 'news_list' %}">News</a></li> -->
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact info -->
+      <div>
+        <p class="footer-heading">Get in Touch</p>
+        <ul class="footer-links">
+          <li><a href="mailto:info@mandelaradio.ac.tz"><i class="fas fa-envelope" style="margin-right:8px;font-size:0.8rem;"></i> info@mandelaradio.ac.tz</a></li>
+          <li><a href="tel:+255"><i class="fas fa-phone" style="margin-right:8px;font-size:0.8rem;"></i> NM-AIST, Arusha</a></li>
+          <li style="margin-top:16px;">
+            <span style="color:rgba(255,255,255,0.4);font-size:0.82rem;">On Air</span>
+            <p style="color:#fff;font-size:0.95rem;margin-top:4px;font-weight:600;">98.9 MHz — Arusha</p>
+          </li>
+        </ul>
+      </div>
+
     </div>
+  </div>
+
+  <div class="footer-bar ast-container">
+    <p>Copyright &copy; {% now "Y" %} Nelson Mandela Radio. All rights reserved.</p>
+    <p style="color:rgba(255,255,255,0.2);">Developed by Dulshan AS Rajabu</p>
+  </div>
 </footer>

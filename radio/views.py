@@ -4,7 +4,10 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
 import json
+import requests
+from django.http import StreamingHttpResponse
 from .models import Frequency, News, Program, LiveStream, ContactMessage, SiteSetting, Member
 
 def home(request):
@@ -26,10 +29,11 @@ def home(request):
 def about(request):
     """About page view"""
     site_settings = SiteSetting.load()
-    
+    members = Member.objects.filter(is_active=True)
     context = {
         'site_settings': site_settings,
-        'page_title': f'About Us - {site_settings.site_name}'
+        'page_title': f'About Us - {site_settings.site_name}',
+        'members': members
     }
     return render(request, 'about.html', context)
 
@@ -68,9 +72,9 @@ def live_stream(request):
     context = {
         'stream': stream,
         'current_program': current_program,
-        'all_programs': all_programs,  # Add this line
-        'programs_by_day': programs_by_day,  # Add this line
-        'day_choices': dict(Program.DAY_CHOICES),  # Add this line
+        'all_programs': all_programs, 
+        'programs_by_day': programs_by_day, 
+        'day_choices': dict(Program.DAY_CHOICES), 
         'site_settings': site_settings,
         'page_title': f'Listen Live - {site_settings.site_name}'
     }
@@ -164,7 +168,7 @@ def programs(request):
 @require_POST
 @csrf_exempt
 def contact(request):
-    """Handle contact form submission"""
+    """Handle contact form submission (now with subject field and user email as sender)"""
     try:
         data = json.loads(request.body) if request.body else request.POST
     except:
@@ -172,12 +176,11 @@ def contact(request):
     
     name = data.get('name', '').strip()
     email = data.get('email', '').strip()
-    phone = data.get('phone', '').strip()
-    subject = data.get('subject', '').strip()
+    subject = data.get('subject', '').strip() or 'Contact Form Message'
     message = data.get('message', '').strip()
     
     # Validation
-    if not name or not email or not message:
+    if not email or not subject or not message:
         return JsonResponse({
             'success': False, 
             'error': 'Please fill in all required fields.'
@@ -185,14 +188,25 @@ def contact(request):
     
     # Save to database
     contact_message = ContactMessage.objects.create(
-        name=name,
+        name=name or email,  # fallback to email if name not provided
         email=email,
-        phone=phone,
         subject=subject,
         message=message,
         ip_address=request.META.get('REMOTE_ADDR'),
         user_agent=request.META.get('HTTP_USER_AGENT', '')
     )
+    
+    # Send email to admin
+    try:
+        send_mail(
+            subject=f"Contact Form: {subject}",
+            message=f"From: {email}\nSubject: {subject}\nMessage:\n{message}",
+            from_email=email,  # user email as sender
+            recipient_list=["nelsonmandela.fm@nm-aist.ac.tz"],
+            fail_silently=False,
+        )
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': 'Failed to send email. Please try again later.'})
     
     return JsonResponse({
         'success': True, 
@@ -294,19 +308,17 @@ def now_playing_api(request):
 def get_members(request):
     """API endpoint for fetching members"""
     members = Member.objects.filter(is_active=True).values(
-        'name',
-        'role',
+        'first_name',
         'bio',
-        'photo'
+        'profile_picture'
     )
     
     member_list = []
     for member in members:
         member_data = {
-            'name': member['name'],
-            'role': member['role'],
+            'first_name': member['first_name'],
             'bio': member['bio'],
-            'photo_url': member['photo'].url if member['photo'] else None
+            'photo_url': member['profile_picture'].url if member['profile_picture'] else None
         }
         member_list.append(member_data)
     
@@ -315,3 +327,17 @@ def get_members(request):
     }
     
     return JsonResponse(data)
+
+@require_GET
+@csrf_exempt
+def stream_proxy(request):
+    """Proxy audio stream for development to bypass CORS."""
+    stream_url = 'http://41.93.85.231:5000/'  # or the full stream endpoint
+    try:
+        r = requests.get(stream_url, stream=True, timeout=10)
+        response = StreamingHttpResponse(r.iter_content(chunk_size=8192), content_type=r.headers.get('Content-Type', 'audio/mpeg'))
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Cache-Control'] = 'no-cache'
+        return response
+    except Exception as e:
+        return HttpResponse('Stream unavailable', status=502)

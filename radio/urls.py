@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/current-program/', views.get_current_program, name='current_program'),
     path('api/now-playing/', views.now_playing_api, name='now_playing_api'),
     path('api/members/', views.get_members, name='get_members'),
+    path('dev-stream/', views.stream_proxy, name='dev_stream'),
 ]

@@ -41,11 +41,11 @@
     }
     .live-wrapper h1 {
         margin-bottom: 10px;
-        color: #0C2340;
+        color: white;
     }
     .live-wrapper p {
         margin-bottom: 40px;
-        color: #555;
+        color: white;
     }
 
     /* Small centered radio card */
@@ -311,8 +311,8 @@
 {% block content %}
 <div class="live-wrapper">
     <div class="live-stream-header">
-        <h1>Sikiliza Radio ya Mandela LIVE</h1>
-        <p>Tunawasilisha mziki bora, taarifa sahihi na vipindi bora 24/7</p>
+        <h1>Listen Nelson Mandela Radio</h1>
+        <p>Get stream 24/7</p>
     </div>
     
     <div class="live-content">
@@ -354,7 +354,7 @@
         <!-- PROGRAM SECTION -->
         <!-- SIMPLE PROGRAM LIST -->
         <div class="current-program">
-            <h3>Ratiba ya Vipindi Vyetu</h3>
+            <h3>Our Schedule</h3>
             
             {% if all_programs %}
                 <div class="programs-list">
@@ -397,8 +397,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const volumeSlider = document.getElementById('volume-slider');
     const statusText = document.getElementById('status-text');
     
-    // Stream URL from Django - make sure this is correct
-    const streamUrl = "{% if stream %}{{ stream.stream_url }}{% else %}/static/audio/default-stream.mp3{% endif %}";
+    // Stream URL from Django - use proxy for development to bypass CORS
+    let streamUrl = "{% if stream %}{{ stream.stream_url }}{% else %}/static/audio/default-stream.mp3{% endif %}";
+    // If running on localhost, use the proxy endpoint
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        streamUrl = '/dev-stream/';
+    }
     
     // Audio player
     let audio = null;

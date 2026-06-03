@@ -1,107 +1,75 @@
 {% load static %}
-<header class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline" id="masthead">
-    <!-- Desktop Header -->
-    <div id="ast-desktop-header" data-toggle-type="dropdown">
-        <div class="ast-main-header-wrap main-header-bar-wrap">
-            <div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item">
-                <div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container">
-                    <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center" style="margin-top: 3%;">
-                        <!-- Logo Section -->
-                        <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
-                            <div class="ast-builder-layout-element ast-flex site-header-focus-item">
-                                <div class="site-branding ast-site-identity">
-                                    <a href="{% url 'home' %}" class="custom-logo-link transparent-custom-logo" rel="home">
-                                        <img width="120" height="120" src="{% static 'images/logo.png' %}" style="border-radius: 12px;" class="custom-logo" alt="Nelson Mandela Radio" loading="eager">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Navigation Section -->
-                        <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
-                            <div class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-layout-element site-header-focus-item">
-                                <div class="ast-main-header-bar-alignment">
-                                    <nav class="site-navigation ast-flex-grow-1 navigation-accessibility" id="primary-site-navigation-desktop" aria-label="Site Navigation">
-                                        <div class="main-navigation ast-inline-flex" style="float: right;">
-                                            <ul class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border astra-menu-animation-fade stack-on-mobile">
-                                                <li class="menu-item {% if request.path == '/' %}current-menu-item{% endif %}">
-                                                    <a href="{% url 'home' %}">Home</a>
-                                                </li>
-                                                <li class="menu-item {% if 'about' in request.path %}current-menu-item{% endif %}">
-                                                    <a href="{% url 'about' %}">Who We Are</a>
-                                                </li>
-                                                <li class="menu-item {% if 'radio' in request.path %}current-menu-item{% endif %}">
-                                                    <a href="{% url 'live_stream' %}">Listen Live</a>
-                                                </li>
-                                                <!-- <li class="menu-item {% if 'programs' in request.path %}current-menu-item{% endif %}">
-                                                    <a href="{% url 'programs' %}">Programs</a>
-                                                </li>
-                                                <li class="menu-item {% if 'news' in request.path %}current-menu-item{% endif %}">
-                                                    <a href="{% url 'news_list' %}">News</a>
-                                                </li> -->
-                                                <li class="menu-item {% if 'contact' in request.path %}current-menu-item{% endif %}">
-                                                    <a href="{% url 'contact' %}">Contact</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<header class="site-header" id="masthead">
 
-    <!-- Mobile Header -->
-    <div id="ast-mobile-header" class="ast-mobile-header-wrap">
-        <div class="ast-main-header-wrap main-header-bar-wrap">
-            <div class="ast-primary-header-bar ast-primary-header main-header-bar site-primary-header-wrap site-header-focus-item">
-                <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
-                    <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
-                        <div class="ast-builder-layout-element ast-flex site-header-focus-item">
-                            <div class="site-branding ast-site-identity">
-                                <a href="{% url 'home' %}" class="custom-logo-link transparent-custom-logo" rel="home">
-                                    <img width="120" height="120" src="{% static 'images/logo.png' %}" class="custom-logo" alt="Nelson Mandela Radio">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
-                        <div class="ast-builder-layout-element ast-flex site-header-focus-item">
-                            <div class="ast-button-wrap">
-                                <button type="button" class="menu-toggle main-header-menu-toggle ast-mobile-menu-trigger-outline" aria-expanded="false" id="mobile-menu-toggle">
-                                    <span class="screen-reader-text">Main Menu</span>
-                                    <span class="mobile-menu-toggle-icon">
-                                        <i class="fas fa-bars"></i>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- ── DESKTOP HEADER ── -->
+  <div id="ast-desktop-header">
+    <div class="ast-primary-header-bar">
+      <div class="ast-builder-grid-row">
+
+        <!-- Logo -->
+        <div class="site-header-primary-section-left">
+          <a href="{% url 'home' %}" rel="home">
+            <img src="{% static 'images/logo.png' %}" class="custom-logo" alt="Nelson Mandela Radio" width="64" height="64">
+          </a>
         </div>
-        
-        <div class="ast-mobile-header-content content-align-flex-start">
-            <div class="ast-builder-menu-mobile ast-builder-menu ast-builder-layout-element site-header-focus-item">
-                <div class="ast-main-header-bar-alignment">
-                    <nav class="site-navigation ast-flex-grow-1 navigation-accessibility" id="ast-mobile-site-navigation" aria-label="Site Navigation">
-                        <div class="main-navigation">
-                            <ul class="main-header-menu ast-nav-menu ast-flex submenu-with-border astra-menu-animation-fade stack-on-mobile">
-                                <li class="menu-item"><a href="{% url 'home' %}">Home</a></li>
-                                <li class="menu-item"><a href="{% url 'about' %}">Who We Are</a></li>
-                                <li class="menu-item"><a href="{% url 'live_stream' %}">Listen Live</a></li>
-                                <li class="menu-item"><a href="{% url 'programs' %}">Programs</a></li>
-                                <li class="menu-item"><a href="{% url 'news_list' %}">News</a></li>
-                                <li class="menu-item"><a href="{% url 'contact' %}">Contact</a></li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-            </div>
+
+        <!-- Navigation -->
+        <div class="site-header-primary-section-right">
+          <nav id="primary-site-navigation-desktop" aria-label="Site Navigation">
+            <ul class="main-header-menu">
+              <li class="menu-item {% if request.path == '/' %}current-menu-item{% endif %}">
+                <a href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="menu-item {% if 'about' in request.path %}current-menu-item{% endif %}">
+                <a href="{% url 'about' %}">Who We Are</a>
+              </li>
+              <li class="menu-item {% if 'radio' in request.path %}current-menu-item{% endif %}">
+                <a href="{% url 'live_stream' %}">Listen Live</a>
+              </li>
+              <li class="menu-item {% if 'contact' in request.path %}current-menu-item{% endif %}">
+                <a href="{% url 'contact' %}">Contact</a>
+              </li>
+              <li>
+                <a href="{% url 'live_stream' %}" class="btn btn-primary" style="padding:10px 22px;font-size:12px;">
+                  <i class="fas fa-broadcast-tower"></i> On Air
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
+
+      </div>
     </div>
+  </div>
+
+  <!-- ── MOBILE HEADER ── -->
+  <div id="ast-mobile-header" class="ast-mobile-header-wrap">
+    <div class="ast-primary-header-bar">
+      <div class="ast-builder-grid-row">
+        <div>
+          <a href="{% url 'home' %}" rel="home">
+            <img src="{% static 'images/logo.png' %}" class="custom-logo" alt="Nelson Mandela Radio" width="70" height="40">
+          </a>
+        </div>
+        <div>
+          <button type="button" class="menu-toggle" id="mobile-menu-toggle" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="ast-mobile-header-content" id="mobile-menu-content">
+      <nav aria-label="Mobile Navigation">
+        <ul class="main-header-menu">
+          <li class="menu-item"><a href="{% url 'home' %}">Home</a></li>
+          <li class="menu-item"><a href="{% url 'about' %}">Who We Are</a></li>
+          <li class="menu-item"><a href="{% url 'live_stream' %}">Listen Live</a></li>
+          <!-- <li class="menu-item"><a href="{% url 'programs' %}">Programs</a></li>
+          <li class="menu-item"><a href="{% url 'news_list' %}">News</a></li> -->
+          <li class="menu-item"><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
 </header>

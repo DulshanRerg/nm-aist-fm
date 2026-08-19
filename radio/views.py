@@ -4,11 +4,14 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST, require_GET
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Count
 from django.core.mail import send_mail
 import json
 import requests
+import datetime
 from django.http import StreamingHttpResponse
-from .models import Frequency, News, Program, ProgramSchedule, LiveStream, ContactMessage, SiteSetting, Member
+from .models import Frequency, News, Program, ProgramSchedule, LiveStream, ContactMessage, SiteSetting, Member, PageVisit
 
 WEEK_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
@@ -347,3 +350,55 @@ def stream_proxy(request):
         return response
     except Exception as e:
         return HttpResponse('Stream unavailable', status=502)
+
+
+@staff_member_required
+def visitor_stats(request):
+    """Admin-only dashboard: total visitors, page views, and a trend chart."""
+    now = timezone.localtime(timezone.now())
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    week_start = today_start - datetime.timedelta(days=today_start.weekday())
+    month_start = today_start.replace(day=1)
+
+    all_visits = PageVisit.objects.all()
+
+    def unique_visitors(qs):
+        return qs.values('session_key').distinct().count()
+
+    stats = {
+        'total_visitors': unique_visitors(all_visits),
+        'total_pageviews': all_visits.count(),
+        'today_visitors': unique_visitors(all_visits.filter(created_at__gte=today_start)),
+        'today_pageviews': all_visits.filter(created_at__gte=today_start).count(),
+        'week_visitors': unique_visitors(all_visits.filter(created_at__gte=week_start)),
+        'month_visitors': unique_visitors(all_visits.filter(created_at__gte=month_start)),
+    }
+
+    # Last 14 days trend, for a simple bar chart (unique visitors per day)
+    daily_trend = []
+    max_day_count = 1
+    for i in range(13, -1, -1):
+        day_start = today_start - datetime.timedelta(days=i)
+        day_end = day_start + datetime.timedelta(days=1)
+        count = unique_visitors(all_visits.filter(created_at__gte=day_start, created_at__lt=day_end))
+        daily_trend.append({'label': day_start.strftime('%a %d'), 'count': count})
+        max_day_count = max(max_day_count, count)
+    for row in daily_trend:
+        row['height_pct'] = round((row['count'] / max_day_count) * 100) if max_day_count else 0
+
+    # Most visited pages, all-time
+    top_pages = (
+        all_visits.values('path')
+        .annotate(views=Count('id'))
+        .order_by('-views')[:10]
+    )
+
+    recent_visits = all_visits.select_related()[:20]
+
+    context = {
+        'stats': stats,
+        'daily_trend': daily_trend,
+        'top_pages': top_pages,
+        'recent_visits': recent_visits,
+    }
+    return render(request, 'admin/visitor_stats.html', context)

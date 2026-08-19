@@ -2,7 +2,7 @@
 from django.contrib import admin
 from .models import (
     Frequency, News, Program, ProgramSchedule, LiveStream, Member,
-    ContactMessage, SocialMedia, SiteSetting, AdBanner
+    ContactMessage, SocialMedia, SiteSetting, AdBanner, PageVisit
 )
 
 
@@ -91,3 +91,18 @@ class MemberAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'email', 'is_active']
     list_filter = ['is_active', 'created_at']
     search_fields = ['first_name', 'last_name', 'email']
+
+
+@admin.register(PageVisit)
+class PageVisitAdmin(admin.ModelAdmin):
+    list_display = ['path', 'ip_address', 'session_key', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['path', 'ip_address', 'session_key']
+    date_hierarchy = 'created_at'
+    readonly_fields = ['path', 'session_key', 'ip_address', 'user_agent', 'created_at']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

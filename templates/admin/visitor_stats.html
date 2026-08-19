@@ -1,0 +1,100 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Visitor Statistics{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px;">
+    <h1 style="color:#FFD700; margin-bottom:4px;">Visitor Statistics</h1>
+    <p style="color:#888; margin-bottom:28px;">A visitor is counted once per browser session; a page view is counted every time a page loads.</p>
+
+    <!-- Summary cards -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin-bottom:32px;">
+        <div style="background:#12233e; border-radius:10px; padding:18px 20px; color:#fff;">
+            <div style="font-size:26px; font-weight:800;">{{ stats.total_visitors }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase;">Total Visitors (all time)</div>
+        </div>
+        <div style="background:#12233e; border-radius:10px; padding:18px 20px; color:#fff;">
+            <div style="font-size:26px; font-weight:800;">{{ stats.total_pageviews }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase;">Total Page Views</div>
+        </div>
+        <div style="background:#12233e; border-radius:10px; padding:18px 20px; color:#fff;">
+            <div style="font-size:26px; font-weight:800;">{{ stats.today_visitors }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase;">Visitors Today</div>
+        </div>
+        <div style="background:#12233e; border-radius:10px; padding:18px 20px; color:#fff;">
+            <div style="font-size:26px; font-weight:800;">{{ stats.today_pageviews }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase;">Page Views Today</div>
+        </div>
+        <div style="background:#12233e; border-radius:10px; padding:18px 20px; color:#fff;">
+            <div style="font-size:26px; font-weight:800;">{{ stats.week_visitors }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase;">Visitors This Week</div>
+        </div>
+        <div style="background:#12233e; border-radius:10px; padding:18px 20px; color:#fff;">
+            <div style="font-size:26px; font-weight:800;">{{ stats.month_visitors }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase;">Visitors This Month</div>
+        </div>
+    </div>
+
+    <!-- 14-day trend -->
+    <h2 style="font-size:16px; color:#333; margin-bottom:14px;">Last 14 Days (unique visitors)</h2>
+    <div style="background:#fff; border:1px solid #ddd; border-radius:10px; padding:24px 20px 12px; margin-bottom:32px;">
+        <div style="display:flex; align-items:flex-end; gap:8px; height:150px;">
+            {% for day in daily_trend %}
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;">
+                <div style="font-size:11px; color:#333; margin-bottom:4px;">{{ day.count }}</div>
+                <div style="width:100%; max-width:28px; background:linear-gradient(180deg,#FFD700,#12233e); border-radius:4px 4px 0 0; height:{{ day.height_pct }}%; min-height:2px;"></div>
+                <div style="font-size:10px; color:#888; margin-top:6px; white-space:nowrap;">{{ day.label }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+        <!-- Top pages -->
+        <div>
+            <h2 style="font-size:16px; color:#333; margin-bottom:14px;">Most Visited Pages (all time)</h2>
+            <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #ddd; border-radius:8px; overflow:hidden;">
+                <thead>
+                    <tr style="background:#12233e; color:#fff;">
+                        <th style="text-align:left; padding:10px 12px; font-size:12px;">Page</th>
+                        <th style="text-align:right; padding:10px 12px; font-size:12px;">Views</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for page in top_pages %}
+                    <tr style="border-top:1px solid #eee;">
+                        <td style="padding:9px 12px; font-size:13px; color:#333;">{{ page.path }}</td>
+                        <td style="padding:9px 12px; font-size:13px; text-align:right; color:#333;">{{ page.views }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="2" style="padding:14px 12px; color:#888; font-size:13px;">No visits recorded yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recent visits -->
+        <div>
+            <h2 style="font-size:16px; color:#333; margin-bottom:14px;">Recent Visits</h2>
+            <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #ddd; border-radius:8px; overflow:hidden;">
+                <thead>
+                    <tr style="background:#12233e; color:#fff;">
+                        <th style="text-align:left; padding:10px 12px; font-size:12px;">Page</th>
+                        <th style="text-align:right; padding:10px 12px; font-size:12px;">Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visit in recent_visits %}
+                    <tr style="border-top:1px solid #eee;">
+                        <td style="padding:9px 12px; font-size:13px; color:#333;">{{ visit.path }}</td>
+                        <td style="padding:9px 12px; font-size:12px; text-align:right; color:#888;">{{ visit.created_at|timesince }} ago</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="2" style="padding:14px 12px; color:#888; font-size:13px;">No visits recorded yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

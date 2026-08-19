@@ -1,0 +1,28 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div style="background:#12233e; border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:20px 24px; margin-bottom:24px; color:#fff;">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+        <div>
+            <h2 style="margin:0 0 4px; font-size:18px; color:#FFD700;">👥 Visitor Overview</h2>
+            <p style="margin:0; color:#b7c2d1; font-size:13px;">Unique visitors are counted once per browser session.</p>
+        </div>
+        <a href="{% url 'visitor_stats' %}" style="background:#FFD700; color:#0A0A0A; font-weight:700; font-size:13px; padding:9px 18px; border-radius:50px; text-decoration:none;">View full dashboard →</a>
+    </div>
+    <div style="display:flex; gap:36px; margin-top:18px; flex-wrap:wrap;">
+        <div>
+            <div style="font-size:28px; font-weight:800; color:#fff;">{{ admin_total_visitors|default:"0" }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase; letter-spacing:0.04em;">Total Visitors</div>
+        </div>
+        <div>
+            <div style="font-size:28px; font-weight:800; color:#fff;">{{ admin_today_visitors|default:"0" }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase; letter-spacing:0.04em;">Visitors Today</div>
+        </div>
+        <div>
+            <div style="font-size:28px; font-weight:800; color:#fff;">{{ admin_total_pageviews|default:"0" }}</div>
+            <div style="font-size:12px; color:#b7c2d1; text-transform:uppercase; letter-spacing:0.04em;">Total Page Views</div>
+        </div>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}

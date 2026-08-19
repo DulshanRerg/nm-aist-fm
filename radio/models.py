@@ -529,6 +529,29 @@ class Member(models.Model):
     def get_status_display(self):
         """Return member status"""
         return "Active" if self.is_active else "Inactive"
+
+
+class PageVisit(models.Model):
+    """One row per page view, used to power the admin visitor dashboard.
+
+    A "visitor" is counted as a unique session_key; a "page view" is every
+    row. Excludes admin, static, media and API/AJAX requests (see
+    VisitorTrackingMiddleware).
+    """
+    path = models.CharField(max_length=500)
+    session_key = models.CharField(max_length=40, db_index=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Page Visit"
+        verbose_name_plural = "Page Visits"
+
+    def __str__(self):
+        return f"{self.path} — {self.created_at:%Y-%m-%d %H:%M}"
+
     
 
     

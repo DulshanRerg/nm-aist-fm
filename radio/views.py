@@ -81,40 +81,6 @@ def live_stream(request):
     stream = LiveStream.objects.filter(is_active=True).first()
     site_settings = SiteSetting.load()
 
-<<<<<<< HEAD
-    # Get ALL active programs
-    all_programs = Program.objects.filter(is_active=True).order_by('order', 'start_time')
-
-    # Group programs by day
-    programs_by_day = {}
-    for program in all_programs:
-        if program.days == 'daily':
-            for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
-                if day not in programs_by_day:
-                    programs_by_day[day] = []
-                programs_by_day[day].append(program)
-        elif program.days == 'weekdays':
-            for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']:
-                if day not in programs_by_day:
-                    programs_by_day[day] = []
-                programs_by_day[day].append(program)
-        elif program.days == 'weekends':
-            for day in ['saturday', 'sunday']:
-                if day not in programs_by_day:
-                    programs_by_day[day] = []
-                programs_by_day[day].append(program)
-        else:
-            if program.days not in programs_by_day:
-                programs_by_day[program.days] = []
-            programs_by_day[program.days].append(program)
-
-    context = {
-        'stream': stream,
-        'current_program': current_program,
-        'all_programs': all_programs,
-        'programs_by_day': programs_by_day,
-        'day_choices': dict(Program.DAY_CHOICES),
-=======
     schedule_by_day = build_week_schedule()
     today = timezone.localtime(timezone.now()).strftime('%A').lower()
     todays_slots = schedule_by_day.get(today, [])
@@ -123,7 +89,6 @@ def live_stream(request):
         'stream': stream,
         'todays_slots': todays_slots,
         'today': today,
->>>>>>> 87d4fbd5a40ae3914c9f518d6ee2fabe920c5e37
         'site_settings': site_settings,
         'page_title': f'Listen Live - {site_settings.site_name}'
     }
@@ -178,39 +143,11 @@ def news_detail(request, slug):
     return render(request, 'news_detail.html', context)
 
 def programs(request):
-<<<<<<< HEAD
-    """Programs listing page"""
-    programs_list = Program.objects.filter(is_active=True).order_by('order', 'start_time')
-
-    # Group by day
-    programs_by_day = {}
-    for program in programs_list:
-        if program.days == 'daily':
-            for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
-                if day not in programs_by_day:
-                    programs_by_day[day] = []
-                programs_by_day[day].append(program)
-        elif program.days == 'weekdays':
-            for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']:
-                if day not in programs_by_day:
-                    programs_by_day[day] = []
-                programs_by_day[day].append(program)
-        elif program.days == 'weekends':
-            for day in ['saturday', 'sunday']:
-                if day not in programs_by_day:
-                    programs_by_day[day] = []
-                programs_by_day[day].append(program)
-        else:
-            if program.days not in programs_by_day:
-                programs_by_day[program.days] = []
-            programs_by_day[program.days].append(program)
-=======
     """Programs schedule page — cards grouped by day, defaulting to today."""
     schedule_by_day = build_week_schedule()
     today = timezone.localtime(timezone.now()).strftime('%A').lower()
 
     day_tabs = [(day, day.capitalize()) for day in WEEK_DAYS]
->>>>>>> 87d4fbd5a40ae3914c9f518d6ee2fabe920c5e37
 
     site_settings = SiteSetting.load()
 
@@ -304,15 +241,6 @@ def get_current_program(request):
     current_time = now.time()
     current_day = now.strftime('%A').lower()
 
-<<<<<<< HEAD
-    # Find current program
-    current_program = Program.objects.filter(
-        is_active=True,
-        is_live=True
-    ).first()
-
-    if current_program:
-=======
     # Find the schedule slot airing right now
     current_slot = None
     for slot in ProgramSchedule.objects.select_related('program', 'program__host').filter(
@@ -330,7 +258,6 @@ def get_current_program(request):
             break
 
     if current_slot:
->>>>>>> 87d4fbd5a40ae3914c9f518d6ee2fabe920c5e37
         program_data = {
             'title': current_slot.program.title,
             'host': str(current_slot.program.host) if current_slot.program.host else '',

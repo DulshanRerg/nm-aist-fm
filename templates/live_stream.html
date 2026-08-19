@@ -5,351 +5,6 @@
 
 {% block extra_head %}
 <style>
-    /* ===== Live badge ===== */
-    .live-badge {
-        background: rgba(36, 26, 26, 0.623);
-        color: white;
-        padding: 3px 10px;
-        border-radius: 8px;
-        border: 1px solid rgba(238, 11, 11, 0.842);
-        font-size: 12px;
-        font-weight: bold;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    @keyframes blink {
-        0% { opacity: 1; }
-        50% { opacity: 0.1; }
-        100% { opacity: 1; }
-    }
-
-    .live-dot {
-        height: 10px;
-        width: 10px;
-        background: #ff4444;
-        border-radius: 50%;
-        animation: blink 1s infinite;
-    }
-
-    /* ===== Layout wrappers ===== */
-    .live-wrapper {
-        max-width: 1200px;
-        margin: 150px auto 50px auto;
-        text-align: center;
-    }
-    .live-wrapper h1 {
-        margin-bottom: 10px;
-        color: white;
-    }
-    .live-wrapper p {
-        margin-bottom: 40px;
-        color: white;
-    }
-
-    .live-stream-header {
-        margin-bottom: 30px;
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        padding: 40px 0;
-        color: white;
-        text-align: center;
-        background-image: url('{% static "images/Untitled-design.png" %}');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.7);
-    }
-
-    .live-content {
-        margin-top: 30px;
-        background: #7e0404;
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        padding-top: 40px;
-        padding-bottom: 40px;
-        text-align: center;
-    }
-
-    /* ===== Player card ===== */
-    .radio-player {
-        width: 520px;
-        margin: 0 auto;
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
-    }
-
-    .radio-player img {
-        width: 190px;
-        border-radius: 15px;
-        margin-bottom: 15px;
-    }
-
-    .radio-player h2 {
-        margin-bottom: 20px;
-        color: #FFD700;
-    }
-
-    .radio-player h3 {
-        font-size: 22px;
-        margin-bottom: 5px;
-        font-weight: 600;
-        color: #444;
-    }
-
-    #current-program-title {
-        font-size: 24px;
-        margin-bottom: 15px;
-        font-weight: 600;
-        color: #130e0eea;
-        padding: 10px 0;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-
-    .player-controls {
-        display: flex;
-        justify-content: center;
-        gap: 25px;
-        margin-top: 10px;
-    }
-
-    .play-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: #054ba0;
-        border: none;
-        color: black;
-        font-size: 28px;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .play-btn:hover {
-        transform: scale(1.1);
-        background: #ffdd33;
-    }
-
-    .play-btn.playing {
-        background: #ffdd33;
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(255, 221, 51, 0.5);
-    }
-
-    .volume-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: #054ba0;
-        color: black;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-    }
-
-    .volume-btn:hover {
-        transform: scale(1.1);
-    }
-
-    .volume-btn.muted {
-        background: #ff4444;
-    }
-
-    .volume-control {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 15px;
-        padding: 0 20px;
-    }
-
-    .volume-control input[type="range"] {
-        width: 150px;
-        height: 6px;
-        background: #333;
-        border-radius: 3px;
-        outline: none;
-    }
-
-    .volume-control input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: black;
-        cursor: pointer;
-    }
-
-    .volume-control input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: black;
-        cursor: pointer;
-        border: none;
-    }
-
-    .player-status {
-        margin-top: 15px;
-        font-size: 14px;
-        padding: 5px 10px;
-        border-radius: 5px;
-        background: rgba(255, 215, 0, 0.1);
-    }
-
-    /* ===== Schedule section ===== */
-    .schedule-section {
-        max-width: 1200px;
-        margin: 40px auto 0 auto;
-        padding: 0 20px;
-        text-align: left;
-    }
-
-    .schedule-section h3 {
-        color: white;
-        font-size: 28px;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    /* Day selector buttons */
-    .day-selector {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 30px;
-    }
-
-    .day-btn {
-        background: #2a2a2a;
-        border: none;
-        color: #ddd;
-        padding: 10px 20px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: 2px solid transparent;
-        min-width: 70px;
-    }
-
-    .day-btn:hover {
-        background: #3a3a3a;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .day-btn.active {
-        background: #FFD700;
-        color: #222;
-        border-color: #FFD700;
-        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-    }
-
-    .day-btn.today {
-        background: #054ba0;
-        color: white;
-        border-color: #054ba0;
-    }
-
-    .day-btn.today.active {
-        background: #FFD700;
-        color: #222;
-        border-color: #FFD700;
-    }
-
-    /* Programs grid: 4 cards per row */
-    .programs-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 25px;
-        margin-top: 10px;
-    }
-
-    /* Individual program card */
-    .program-card {
-        background: #1c1c1c;
-        border-radius: 16px;
-        padding: 20px 18px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        border: 1px solid #333;
-        display: flex;
-        flex-direction: column;
-        text-align: left;
-        color: #eee;
-        position: relative;
-    }
-
-    .program-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 35px rgba(0,0,0,0.7);
-        border-color: #FFD700;
-    }
-
-    .program-card.hidden {
-        display: none;
-    }
-
-    .program-time {
-        font-size: 13px;
-        color: #aaa;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: 500;
-    }
-
-    .program-time .time-separator {
-        color: #666;
-    }
-
-    .program-info h4 {
-        font-size: 18px;
-        margin: 0 0 10px 0;
-        color: #FFD700;
-        font-weight: 600;
-        line-height: 1.3;
-    }
-
-    .program-meta {
-        font-size: 13px;
-        color: #bbb;
-        margin-bottom: 12px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .program-meta span {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Sikiliza LIVE - Radio ya Mandela{% endblock %}
-
-{% block extra_head %}
-<style>
     .live-badge {
         background: rgba(36, 26, 26, 0.623);
         color: white;
@@ -544,7 +199,7 @@
     }
 
     /* Now playing animations */
-
+    
 
     .song-title {
         animation: pulse 2s infinite;
@@ -563,7 +218,7 @@
         box-shadow: 0px 3px 12px rgba(0,0,0,0.5);
         display: inline-block;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-
+       
     }
 
     .how-to-listen {
@@ -659,7 +314,7 @@
         <h1>Listen Nelson Mandela Radio</h1>
         <p>Get stream 24/7</p>
     </div>
-
+    
     <div class="live-content">
         <!-- PLAYER CARD -->
         <div class="radio-player">
@@ -677,7 +332,7 @@
                 <button class="play-btn" id="play-btn">
                     <i class="fa-solid fa-play" id="play-icon"></i>
                 </button>
-
+                
                 <button class="volume-btn" id="mute-btn">
                     <i class="fas fa-volume-up" id="volume-icon"></i>
                 </button>
@@ -729,7 +384,7 @@
             <p style="margin-top:20px;">
                 <a href="{% url 'programs' %}" class="btn btn-outline">See full weekly schedule</a>
             </p>
-        </div>
+        </div> 
 </div>
 {% endblock %}
 
@@ -743,14 +398,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const volumeIcon = document.getElementById('volume-icon');
     const volumeSlider = document.getElementById('volume-slider');
     const statusText = document.getElementById('status-text');
-
+    
     // Stream URL from Django - use proxy for development to bypass CORS
     let streamUrl = "{% if stream %}{{ stream.stream_url }}{% else %}/static/audio/default-stream.mp3{% endif %}";
     // If running on localhost, use the proxy endpoint
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         streamUrl = '/dev-stream/';
     }
-
+    
     // Audio player
     let audio = null;
     let isPlaying = false;
@@ -765,12 +420,12 @@ document.addEventListener('DOMContentLoaded', function() {
             audio.volume = currentVolume;
             audio.preload = 'none';
             audio.crossOrigin = 'anonymous'; // Important for some streams
-
+            
             // Update volume slider to match initial volume
             if (volumeSlider) {
                 volumeSlider.value = currentVolume * 100;
             }
-
+            
             // Event listeners for audio
             audio.addEventListener('playing', onAudioPlaying);
             audio.addEventListener('pause', onAudioPaused);
@@ -778,11 +433,11 @@ document.addEventListener('DOMContentLoaded', function() {
             audio.addEventListener('error', onAudioError);
             audio.addEventListener('waiting', onAudioWaiting);
             audio.addEventListener('canplay', onAudioCanPlay);
-
+            
             console.log('Player initialized with stream:', streamUrl);
         }
     }
-
+    
     // Audio event handlers
     function onAudioPlaying() {
         console.log('Audio is now playing');
@@ -790,27 +445,27 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePlayButton(true);
         updateStatus('Playing LIVE radio');
     }
-
+    
     function onAudioPaused() {
         console.log('Audio paused');
         isPlaying = false;
         updatePlayButton(false);
         updateStatus('Paused');
     }
-
+    
     function onAudioEnded() {
         console.log('Audio ended');
         isPlaying = false;
         updatePlayButton(false);
         updateStatus('Stream ended');
     }
-
+    
     function onAudioError(e) {
         console.error('Audio error:', e, audio.error);
         isPlaying = false;
         updatePlayButton(false);
         updateStatus('Error loading stream');
-
+        
         // More detailed error information
         switch(audio.error.code) {
             case audio.error.MEDIA_ERR_ABORTED:
@@ -829,17 +484,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateStatus('Error playing stream');
         }
     }
-
+    
     function onAudioWaiting() {
         console.log('Audio buffering...');
         updateStatus('Buffering...');
     }
-
+    
     function onAudioCanPlay() {
         console.log('Audio can play');
         updateStatus('Ready to play');
     }
-
+    
     // Update play button state
     function updatePlayButton(playing) {
         if (playing) {
@@ -854,12 +509,12 @@ document.addEventListener('DOMContentLoaded', function() {
             playBtn.setAttribute('aria-label', 'Play radio');
         }
     }
-
+    
     // Update status text
     function updateStatus(text) {
         if (statusText) {
             statusText.textContent = text;
-
+            
             // Add color based on status
             if (text.includes('Error') || text.includes('unavailable')) {
                 statusText.style.color = '#ff4444';
@@ -872,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-
+    
     // Update mute button state
     function updateMuteButton(muted) {
         if (muted) {
@@ -885,16 +540,16 @@ document.addEventListener('DOMContentLoaded', function() {
             muteBtn.setAttribute('aria-label', 'Mute radio');
         }
     }
-
+    
     // Play/Pause button click
     playBtn.addEventListener('click', function() {
         initPlayer();
-
+        
         if (!audio.src || audio.src.includes('default-stream.mp3')) {
             updateStatus('Stream URL not configured');
             return;
         }
-
+        
         if (isPlaying) {
             // Currently playing, so pause
             audio.pause();
@@ -902,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             updatePlayButton(true); // Switch icon immediately on click
             const playPromise = audio.play();
-
+            
             if (playPromise !== undefined) {
                 playPromise
                     .then(() => {
@@ -914,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         isPlaying = false;
                         updatePlayButton(false); // Revert icon if playback fails
                         updateStatus('Click to play');
-
+                        
                         // User-friendly error messages
                         if (error.name === 'NotAllowedError') {
                             alert('Please click the play button again to start playback, or check your browser permissions.');
@@ -925,19 +580,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
+    
     // Mute/Unmute button click
     muteBtn.addEventListener('click', function() {
         if (!audio) {
             initPlayer();
         }
-
+        
         isMuted = !isMuted;
         audio.muted = isMuted;
         updateMuteButton(isMuted);
-
+        
         updateStatus(isMuted ? 'Volume muted' : 'Volume unmuted');
-
+        
         // Clear status after 2 seconds if playing
         if (isPlaying) {
             setTimeout(() => {
@@ -945,16 +600,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         }
     });
-
+    
     // Volume slider
     volumeSlider.addEventListener('input', function() {
         if (!audio) {
             initPlayer();
         }
-
+        
         currentVolume = this.value / 100;
         audio.volume = currentVolume;
-
+        
         // Update mute state if volume is 0
         if (currentVolume === 0 && !isMuted) {
             isMuted = true;
@@ -965,7 +620,7 @@ document.addEventListener('DOMContentLoaded', function() {
             audio.muted = false;
             updateMuteButton(false);
         }
-
+        
         // Show volume level in status
         if (currentVolume === 0) {
             updateStatus('Volume muted');
@@ -979,10 +634,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
+    
     // Initialize player on page load
     initPlayer();
-
+    
     // Add keyboard shortcuts
     document.addEventListener('keydown', function(e) {
         // Spacebar to play/pause
@@ -990,489 +645,18 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             playBtn.click();
         }
-
+        
         // M key to mute/unmute
         if (e.code === 'KeyM' && !e.target.matches('input, textarea')) {
             e.preventDefault();
             muteBtn.click();
         }
     });
-
+    
     // Update play button tooltip
     playBtn.title = "Play/Pause (Spacebar)";
     muteBtn.title = "Mute/Unmute (M key)";
-
-});
-</script>
-{% endblock %}
-
-
-    .program-meta i {
-        font-size: 12px;
-        color: #FFD700;
-    }
-
-    .live-badge-small {
-        background: #ff4444;
-        color: white;
-        padding: 2px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: bold;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .live-badge-small i {
-        color: white !important;
-        font-size: 10px;
-    }
-
-    .program-desc {
-        font-size: 14px;
-        color: #ccc;
-        line-height: 1.5;
-        margin: 8px 0 0 0;
-        flex-grow: 1;
-    }
-
-    .no-programs {
-        grid-column: 1 / -1;
-        text-align: center;
-        color: #aaa;
-        font-size: 18px;
-        padding: 40px 0;
-    }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 768px) {
-        .radio-player {
-            width: 90%;
-        }
-        .programs-grid {
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .day-selector {
-            gap: 8px;
-        }
-        .day-btn {
-            padding: 8px 14px;
-            font-size: 13px;
-            min-width: 60px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .programs-grid {
-            grid-template-columns: 1fr;
-        }
-        .day-btn {
-            padding: 6px 12px;
-            font-size: 12px;
-            min-width: 50px;
-        }
-        .schedule-section {
-            padding: 0 10px;
-        }
-    }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="live-wrapper">
-    <div class="live-stream-header">
-        <h1>Listen Nelson Mandela Radio</h1>
-        <p>Get stream 24/7</p>
-    </div>
-
-    <div class="live-content">
-        <!-- ====== PLAYER CARD ====== -->
-        <div class="radio-player">
-            <img src="{% static 'images/logo.png' %}" alt="Radio Logo">
-            <h3 id="current-program-title">98.9 MHz - ARUSHA</h3>
-
-            <div class="live-badge">
-                LIVE
-                <div class="live-dot"></div>
-            </div>
-
-            <div class="player-controls">
-                <button class="play-btn" id="play-btn">
-                    <i class="fa-solid fa-play" id="play-icon"></i>
-                </button>
-                <button class="volume-btn" id="mute-btn">
-                    <i class="fas fa-volume-up" id="volume-icon"></i>
-                </button>
-            </div>
-
-            <div class="volume-control">
-                <i class="fas fa-volume-down"></i>
-                <input type="range" id="volume-slider" min="0" max="100" value="80">
-                <i class="fas fa-volume-up"></i>
-            </div>
-
-            <div class="player-status">
-                <span id="status-text">Ready to play</span>
-            </div>
-        </div>
-
-        <!-- ====== SCHEDULE SECTION ====== -->
-        <div class="schedule-section">
-            <h3>📅 Weekly Schedule</h3>
-
-            <!-- Day Selector -->
-            <div class="day-selector" id="daySelector">
-                <button class="day-btn today active" data-day="today">📆 Today</button>
-                <button class="day-btn" data-day="Monday">Mon</button>
-                <button class="day-btn" data-day="Tuesday">Tue</button>
-                <button class="day-btn" data-day="Wednesday">Wed</button>
-                <button class="day-btn" data-day="Thursday">Thu</button>
-                <button class="day-btn" data-day="Friday">Fri</button>
-                <button class="day-btn" data-day="Saturday">Sat</button>
-                <button class="day-btn" data-day="Sunday">Sun</button>
-                <button class="day-btn" data-day="all">All</button>
-            </div>
-
-            <!-- Programs Grid -->
-            <div class="programs-grid" id="programsGrid">
-                {% if all_programs %}
-                    {% for program in all_programs %}
-                    <div class="program-card"
-                         data-days="{{ program.get_days_display }}"
-                         data-title="{{ program.title }}"
-                         data-start="{{ program.start_time|time:"H:i" }}"
-                         data-end="{{ program.end_time|time:"H:i" }}">
-                        <div class="program-time">
-                            <span class="start-time">{{ program.start_time|time:"H:i" }}</span>
-                            <span class="time-separator">-</span>
-                            <span class="end-time">{{ program.end_time|time:"H:i" }}</span>
-                        </div>
-                        <div class="program-info">
-                            <h4>{{ program.title }}</h4>
-                            <div class="program-meta">
-                                <span class="host"><i class="fas fa-user"></i> {{ program.host|default:"TBA" }}</span>
-                                <span class="days"><i class="fas fa-calendar"></i> {{ program.get_days_display }}</span>
-                                {% if program.is_live %}
-                                <span class="live-badge-small"><i class="fas fa-broadcast-tower"></i> LIVE</span>
-                                {% endif %}
-                            </div>
-                            <p class="program-desc">{{ program.description|truncatewords:15 }}</p>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="no-programs">Hakuna vipindi vilivyopangwa bado.</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-
-    // ============================================================
-    // 1. PLAYER LOGIC (play / pause / mute / volume)
-    // ============================================================
-
-    const playBtn = document.getElementById('play-btn');
-    const playIcon = document.getElementById('play-icon');
-    const muteBtn = document.getElementById('mute-btn');
-    const volumeIcon = document.getElementById('volume-icon');
-    const volumeSlider = document.getElementById('volume-slider');
-    const statusText = document.getElementById('status-text');
-
-    let streamUrl = "{% if stream %}{{ stream.stream_url }}{% else %}/static/audio/default-stream.mp3{% endif %}";
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        streamUrl = '/dev-stream/';
-    }
-
-    let audio = null;
-    let isPlaying = false;
-    let isMuted = false;
-    let currentVolume = 0.8;
-
-    function initPlayer() {
-        if (!audio) {
-            audio = new Audio();
-            audio.src = streamUrl;
-            audio.volume = currentVolume;
-            audio.preload = 'none';
-            audio.crossOrigin = 'anonymous';
-            if (volumeSlider) {
-                volumeSlider.value = currentVolume * 100;
-            }
-            audio.addEventListener('playing', onAudioPlaying);
-            audio.addEventListener('pause', onAudioPaused);
-            audio.addEventListener('ended', onAudioEnded);
-            audio.addEventListener('error', onAudioError);
-            audio.addEventListener('waiting', onAudioWaiting);
-            audio.addEventListener('canplay', onAudioCanPlay);
-        }
-    }
-
-    function onAudioPlaying() {
-        isPlaying = true;
-        updatePlayButton(true);
-        updateStatus('Playing LIVE radio');
-    }
-    function onAudioPaused() {
-        isPlaying = false;
-        updatePlayButton(false);
-        updateStatus('Paused');
-    }
-    function onAudioEnded() {
-        isPlaying = false;
-        updatePlayButton(false);
-        updateStatus('Stream ended');
-    }
-    function onAudioError(e) {
-        console.error('Audio error:', e, audio.error);
-        isPlaying = false;
-        updatePlayButton(false);
-        updateStatus('Error loading stream');
-        if (audio.error) {
-            switch(audio.error.code) {
-                case audio.error.MEDIA_ERR_ABORTED: updateStatus('Playback aborted'); break;
-                case audio.error.MEDIA_ERR_NETWORK: updateStatus('Network error'); break;
-                case audio.error.MEDIA_ERR_DECODE: updateStatus('Audio decoding error'); break;
-                case audio.error.MEDIA_ERR_SRC_NOT_SUPPORTED: updateStatus('Stream format not supported'); break;
-                default: updateStatus('Error playing stream');
-            }
-        }
-    }
-    function onAudioWaiting() {
-        updateStatus('Buffering...');
-    }
-    function onAudioCanPlay() {
-        updateStatus('Ready to play');
-    }
-
-    function updatePlayButton(playing) {
-        if (playing) {
-            playIcon.classList.remove('fa-play');
-            playIcon.classList.add('fa-pause');
-            playBtn.classList.add('playing');
-            playBtn.setAttribute('aria-label', 'Pause radio');
-        } else {
-            playIcon.classList.remove('fa-pause');
-            playIcon.classList.add('fa-play');
-            playBtn.classList.remove('playing');
-            playBtn.setAttribute('aria-label', 'Play radio');
-        }
-    }
-
-    function updateStatus(text) {
-        if (statusText) {
-            statusText.textContent = text;
-            if (text.includes('Error') || text.includes('unavailable')) {
-                statusText.style.color = '#ff4444';
-            } else if (text.includes('Playing')) {
-                statusText.style.color = '#4CAF50';
-            } else if (text.includes('Buffering')) {
-                statusText.style.color = '#FF9800';
-            } else {
-                statusText.style.color = '#FFD700';
-            }
-        }
-    }
-
-    function updateMuteButton(muted) {
-        if (muted) {
-            volumeIcon.className = 'fas fa-volume-mute';
-            muteBtn.classList.add('muted');
-            muteBtn.setAttribute('aria-label', 'Unmute radio');
-        } else {
-            volumeIcon.className = 'fas fa-volume-up';
-            muteBtn.classList.remove('muted');
-            muteBtn.setAttribute('aria-label', 'Mute radio');
-        }
-    }
-
-    // Play / Pause
-    playBtn.addEventListener('click', function() {
-        initPlayer();
-        if (!audio.src || audio.src.includes('default-stream.mp3')) {
-            updateStatus('Stream URL not configured');
-            return;
-        }
-        if (isPlaying) {
-            audio.pause();
-        } else {
-            updatePlayButton(true);
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.error('Playback failed:', error);
-                    isPlaying = false;
-                    updatePlayButton(false);
-                    updateStatus('Click to play');
-                    if (error.name === 'NotAllowedError') {
-                        alert('Please click the play button again to start playback, or check your browser permissions.');
-                    } else {
-                        alert('Could not start playback. Please check your internet connection and try again.');
-                    }
-                });
-            }
-        }
-    });
-
-    // Mute / Unmute
-    muteBtn.addEventListener('click', function() {
-        if (!audio) initPlayer();
-        isMuted = !isMuted;
-        audio.muted = isMuted;
-        updateMuteButton(isMuted);
-        updateStatus(isMuted ? 'Volume muted' : 'Volume unmuted');
-        if (isPlaying) {
-            setTimeout(function() { updateStatus('Playing LIVE radio'); }, 2000);
-        }
-    });
-
-    // Volume slider
-    volumeSlider.addEventListener('input', function() {
-        if (!audio) initPlayer();
-        currentVolume = this.value / 100;
-        audio.volume = currentVolume;
-        if (currentVolume === 0 && !isMuted) {
-            isMuted = true;
-            audio.muted = true;
-            updateMuteButton(true);
-        } else if (currentVolume > 0 && isMuted) {
-            isMuted = false;
-            audio.muted = false;
-            updateMuteButton(false);
-        }
-        if (currentVolume === 0) {
-            updateStatus('Volume muted');
-        } else {
-            updateStatus('Volume: ' + Math.round(currentVolume * 100) + '%');
-            if (isPlaying) {
-                setTimeout(function() { updateStatus('Playing LIVE radio'); }, 2000);
-            }
-        }
-    });
-
-    // Keyboard shortcuts (Space = play/pause, M = mute)
-    document.addEventListener('keydown', function(e) {
-        if (e.code === 'Space' && !e.target.matches('input, textarea')) {
-            e.preventDefault();
-            playBtn.click();
-        }
-        if (e.code === 'KeyM' && !e.target.matches('input, textarea')) {
-            e.preventDefault();
-            muteBtn.click();
-        }
-    });
-
-    playBtn.title = "Play/Pause (Spacebar)";
-    muteBtn.title = "Mute/Unmute (M key)";
-
-    initPlayer();
-
-
-    // ============================================================
-    // 2. SCHEDULE FILTERING (supports Weekdays / Weekends groups)
-    // ============================================================
-
-    const dayButtons = document.querySelectorAll('.day-btn');
-    const programCards = document.querySelectorAll('.program-card');
-    const grid = document.getElementById('programsGrid');
-    const todayIndex = new Date().getDay(); // 0=Sun, 1=Mon, ...
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-    // Helper: checks if a program's days attribute includes the selected day
-    function isDayIncluded(programDaysRaw, targetDay) {
-        const raw = programDaysRaw.toLowerCase().trim();
-        if (!raw) return false;
-
-        // --- 1. Check for Weekday group (Mon-Fri) ---
-        const weekdayRegex = /\b(weekdays?|mon(day)?-fri(day)?|monday-friday|mon-fri)\b/i;
-        if (weekdayRegex.test(raw)) {
-            const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-            return weekdays.includes(targetDay.toLowerCase());
-        }
-
-        // --- 2. Check for Weekend group (Sat-Sun) ---
-        const weekendRegex = /\b(weekends?|sat(urday)?-sun(day)?|saturday-sunday|sat-sun)\b/i;
-        if (weekendRegex.test(raw)) {
-            const weekends = ['saturday', 'sunday'];
-            return weekends.includes(targetDay.toLowerCase());
-        }
-
-        // --- 3. Fallback: comma-separated list of specific days ---
-        const daysList = raw.split(',').map(s => s.trim());
-        return daysList.some(function(d) {
-            return d.toLowerCase() === targetDay.toLowerCase();
-        });
-    }
-
-    function filterPrograms(day) {
-        let targetDay = day;
-        if (day === 'today') {
-            targetDay = dayNames[todayIndex];
-        }
-
-        let visibleCount = 0;
-        programCards.forEach(function(card) {
-            const daysAttr = card.getAttribute('data-days') || '';
-            let isVisible = false;
-            if (day === 'all') {
-                isVisible = true;
-            } else {
-                isVisible = isDayIncluded(daysAttr, targetDay);
-            }
-
-            if (isVisible) {
-                card.classList.remove('hidden');
-                visibleCount++;
-            } else {
-                card.classList.add('hidden');
-            }
-        });
-
-        // Show "no programs" message if needed
-        let noMsg = grid.querySelector('.no-programs');
-        if (visibleCount === 0 && programCards.length > 0) {
-            if (!noMsg) {
-                noMsg = document.createElement('div');
-                noMsg.className = 'no-programs';
-                noMsg.textContent = 'No programs scheduled for this day.';
-                grid.appendChild(noMsg);
-            }
-            noMsg.style.display = 'block';
-        } else if (noMsg) {
-            noMsg.style.display = 'none';
-        }
-    }
-
-    function setActiveButton(activeDay) {
-        dayButtons.forEach(function(btn) {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-day') === activeDay) {
-                btn.classList.add('active');
-            }
-        });
-    }
-
-    // Click handlers for day buttons
-    dayButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            const day = this.getAttribute('data-day');
-            filterPrograms(day);
-            setActiveButton(day);
-        });
-    });
-
-    // Initial load: show Today's schedule
-    filterPrograms('today');
-    // Ensure "Today" button stays highlighted (it already has class "active" in HTML)
-    // But if you want to be safe:
-    setActiveButton('today');
+    
 });
 </script>
 {% endblock %}

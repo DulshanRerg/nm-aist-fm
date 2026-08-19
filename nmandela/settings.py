@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-please-change-me'
 DEBUG = True
 
-ALLOWED_HOSTS =['localhost', '127.0.0.1', 'mandela01.pythonanywhere.com']
+ALLOWED_HOSTS =['localhost', '127.0.0.1', '3191-41-93-85-233.ngrok-free.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

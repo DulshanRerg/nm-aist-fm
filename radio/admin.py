@@ -1,9 +1,18 @@
 # radio_app/admin.py
 from django.contrib import admin
 from .models import (
-    Frequency, News, Program, LiveStream, Member,
+    Frequency, News, Program, ProgramSchedule, LiveStream, Member,
     ContactMessage, SocialMedia, SiteSetting, AdBanner
 )
+
+
+class ProgramScheduleInline(admin.TabularInline):
+    """Lets you add several air-time slots (e.g. 06:00-06:20 AND 07:00-07:30)
+    for the same program without duplicating the program itself."""
+    model = ProgramSchedule
+    extra = 1
+    fields = ['days', 'start_time', 'end_time', 'is_live', 'order']
+    ordering = ['order', 'start_time']
 
 @admin.register(Frequency)
 class FrequencyAdmin(admin.ModelAdmin):
@@ -22,10 +31,30 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(Program)
 class ProgramAdmin(admin.ModelAdmin):
-    list_display = ['title', 'host', 'start_time', 'end_time', 'days', 'is_active']
-    list_filter = ['is_active', 'is_live', 'days']
-    search_fields = ['title', 'description', 'host']
+    list_display = ['title', 'host', 'get_slots_display', 'is_active']
+    list_filter = ['is_active']
+    search_fields = ['title', 'description']
     prepopulated_fields = {'slug': ('title',)}
+    inlines = [ProgramScheduleInline]
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'description', 'host', 'category', 'image', 'is_active', 'order')
+        }),
+        ('Legacy (optional, ignored if this program has Time Slots below)', {
+            'classes': ('collapse',),
+            'fields': ('start_time', 'end_time', 'days', 'is_live'),
+        }),
+    )
+
+    def get_slots_display(self, obj):
+        slots = obj.schedules.all()
+        if not slots:
+            return "— no time slots —"
+        return "; ".join(
+            f"{s.get_days_display()} {s.start_time.strftime('%H:%M')}-{s.end_time.strftime('%H:%M')}"
+            for s in slots
+        )
+    get_slots_display.short_description = "Time Slots"
 
 @admin.register(LiveStream)
 class LiveStreamAdmin(admin.ModelAdmin):

@@ -8,13 +8,52 @@ from django.core.mail import send_mail
 import json
 import requests
 from django.http import StreamingHttpResponse
-from .models import Frequency, News, Program, LiveStream, ContactMessage, SiteSetting, Member
+from .models import Frequency, News, Program, ProgramSchedule, LiveStream, ContactMessage, SiteSetting, Member
+
+WEEK_DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+
+
+def build_week_schedule():
+    """Build {day: [slot_dict, ...]} for every day of the week from ProgramSchedule.
+
+    Each slot_dict represents ONE air-time card. A program with several slots
+    (e.g. Habari at 06:00 and again at 07:00) naturally produces one card per
+    slot here, sharing the same program info but with different times —
+    without the program ever having been entered twice.
+    """
+    schedule_by_day = {day: [] for day in WEEK_DAYS}
+
+    slots = ProgramSchedule.objects.select_related('program', 'program__host').filter(
+        program__is_active=True
+    ).order_by('order', 'start_time')
+
+    for slot in slots:
+        for day in slot.expanded_days():
+            schedule_by_day[day].append({
+                'program_id': slot.program_id,
+                'slug': slot.program.slug,
+                'title': slot.program.title,
+                'description': slot.program.description,
+                'host': str(slot.program.host) if slot.program.host else '',
+                'category': slot.program.category,
+                'image_url': slot.program.image.url if slot.program.image else '',
+                'is_live': slot.is_live,
+                'start_time': slot.start_time.strftime('%H:%M'),
+                'end_time': slot.end_time.strftime('%H:%M'),
+                'start_display': slot.start_time.strftime('%-I:%M %p') if hasattr(slot.start_time, 'strftime') else '',
+                'duration': slot.get_duration(),
+            })
+
+    for day in WEEK_DAYS:
+        schedule_by_day[day].sort(key=lambda s: s['start_time'])
+
+    return schedule_by_day
 
 def home(request):
     """Home page view"""
     frequencies = Frequency.objects.filter(is_active=True).order_by('order')
     featured_news = News.objects.filter(is_featured=True, is_published=True)[:3]
-    current_programs = Program.objects.filter(is_active=True, is_live=True)[:3]
+    current_programs = Program.objects.filter(is_active=True, schedules__is_live=True).distinct()[:3]
     site_settings = SiteSetting.load()
 
     context = {
@@ -40,9 +79,9 @@ def about(request):
 def live_stream(request):
     """Live streaming page"""
     stream = LiveStream.objects.filter(is_active=True).first()
-    current_program = Program.objects.filter(is_active=True, is_live=True).first()
     site_settings = SiteSetting.load()
 
+<<<<<<< HEAD
     # Get ALL active programs
     all_programs = Program.objects.filter(is_active=True).order_by('order', 'start_time')
 
@@ -75,6 +114,16 @@ def live_stream(request):
         'all_programs': all_programs,
         'programs_by_day': programs_by_day,
         'day_choices': dict(Program.DAY_CHOICES),
+=======
+    schedule_by_day = build_week_schedule()
+    today = timezone.localtime(timezone.now()).strftime('%A').lower()
+    todays_slots = schedule_by_day.get(today, [])
+
+    context = {
+        'stream': stream,
+        'todays_slots': todays_slots,
+        'today': today,
+>>>>>>> 87d4fbd5a40ae3914c9f518d6ee2fabe920c5e37
         'site_settings': site_settings,
         'page_title': f'Listen Live - {site_settings.site_name}'
     }
@@ -129,6 +178,7 @@ def news_detail(request, slug):
     return render(request, 'news_detail.html', context)
 
 def programs(request):
+<<<<<<< HEAD
     """Programs listing page"""
     programs_list = Program.objects.filter(is_active=True).order_by('order', 'start_time')
 
@@ -154,14 +204,23 @@ def programs(request):
             if program.days not in programs_by_day:
                 programs_by_day[program.days] = []
             programs_by_day[program.days].append(program)
+=======
+    """Programs schedule page — cards grouped by day, defaulting to today."""
+    schedule_by_day = build_week_schedule()
+    today = timezone.localtime(timezone.now()).strftime('%A').lower()
+
+    day_tabs = [(day, day.capitalize()) for day in WEEK_DAYS]
+>>>>>>> 87d4fbd5a40ae3914c9f518d6ee2fabe920c5e37
 
     site_settings = SiteSetting.load()
 
     context = {
-        'programs_by_day': programs_by_day,
-        'day_choices': dict(Program.DAY_CHOICES),
+        'schedule_by_day': schedule_by_day,
+        'schedule_by_day_json': json.dumps(schedule_by_day),
+        'day_tabs': day_tabs,
+        'today': today,
         'site_settings': site_settings,
-        'page_title': f'Programs - {site_settings.site_name}'
+        'page_title': f'Programs Schedule - {site_settings.site_name}'
     }
     return render(request, 'programs.html', context)
 
@@ -241,10 +300,11 @@ def frequencies_json(request):
 
 def get_current_program(request):
     """API endpoint for current program"""
-    now = timezone.now()
+    now = timezone.localtime(timezone.now())
     current_time = now.time()
     current_day = now.strftime('%A').lower()
 
+<<<<<<< HEAD
     # Find current program
     current_program = Program.objects.filter(
         is_active=True,
@@ -252,13 +312,32 @@ def get_current_program(request):
     ).first()
 
     if current_program:
+=======
+    # Find the schedule slot airing right now
+    current_slot = None
+    for slot in ProgramSchedule.objects.select_related('program', 'program__host').filter(
+        program__is_active=True
+    ).order_by('order', 'start_time'):
+        if current_day not in slot.expanded_days():
+            continue
+        if slot.start_time <= slot.end_time:
+            in_range = slot.start_time <= current_time <= slot.end_time
+        else:
+            # Overnight slot (e.g. 23:00-01:00)
+            in_range = current_time >= slot.start_time or current_time <= slot.end_time
+        if in_range:
+            current_slot = slot
+            break
+
+    if current_slot:
+>>>>>>> 87d4fbd5a40ae3914c9f518d6ee2fabe920c5e37
         program_data = {
-            'title': current_program.title,
-            'host': current_program.host,
-            'description': current_program.description,
-            'start_time': current_program.start_time.strftime('%H:%M'),
-            'end_time': current_program.end_time.strftime('%H:%M'),
-            'image_url': current_program.image.url if current_program.image else None
+            'title': current_slot.program.title,
+            'host': str(current_slot.program.host) if current_slot.program.host else '',
+            'description': current_slot.program.description,
+            'start_time': current_slot.start_time.strftime('%H:%M'),
+            'end_time': current_slot.end_time.strftime('%H:%M'),
+            'image_url': current_slot.program.image.url if current_slot.program.image else None
         }
     else:
         program_data = {

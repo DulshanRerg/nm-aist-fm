@@ -352,36 +352,38 @@
         </div>
 
         <!-- PROGRAM SECTION -->
-        <!-- SIMPLE PROGRAM LIST -->
+        <!-- TODAY'S PROGRAM LIST -->
         <div class="current-program">
-            <h3>Our Schedule</h3>
-            
-            {% if all_programs %}
+            <h3>Today's Schedule <span style="text-transform:capitalize; color:#FFD700;">({{ today }})</span></h3>
+
+            {% if todays_slots %}
                 <div class="programs-list">
-                    {% for program in all_programs %}
+                    {% for slot in todays_slots %}
                     <div class="program-card">
                         <div class="program-time">
-                            <span class="start-time">{{ program.start_time|time:"H:i" }}</span>
+                            <span class="start-time">{{ slot.start_time }}</span>
                             <span class="time-separator">-</span>
-                            <span class="end-time">{{ program.end_time|time:"H:i" }}</span>
+                            <span class="end-time">{{ slot.end_time }}</span>
                         </div>
                         <div class="program-info">
-                            <h4>{{ program.title }}</h4>
+                            <h4>{{ slot.title }}</h4>
                             <div class="program-meta">
-                                <span class="host"><i class="fas fa-user"></i> {{ program.host|default:"TBA" }}</span>
-                                <span class="days"><i class="fas fa-calendar"></i> {{ program.get_days_display }}</span>
-                                {% if program.is_live %}
+                                <span class="host"><i class="fas fa-user"></i> {{ slot.host|default:"TBA" }}</span>
+                                {% if slot.is_live %}
                                 <span class="live-badge-small"><i class="fas fa-broadcast-tower"></i> LIVE</span>
                                 {% endif %}
                             </div>
-                            <p class="program-desc">{{ program.description|truncatewords:15 }}</p>
+                            <p class="program-desc">{{ slot.description|truncatewords:15 }}</p>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <p>Hakuna vipindi vilivyopangwa bado.</p>
+                <p>Hakuna vipindi vilivyopangwa leo.</p>
             {% endif %}
+            <p style="margin-top:20px;">
+                <a href="{% url 'programs' %}" class="btn btn-outline">See full weekly schedule</a>
+            </p>
         </div> 
 </div>
 {% endblock %}

@@ -115,9 +115,13 @@ class Program(models.Model):
     slug = models.SlugField(max_length=200, unique=True, blank=True)
     description = models.TextField()
     host = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    days = models.CharField(max_length=20, choices=DAY_CHOICES, default='daily')
+    # Legacy single-slot fields. Kept (optional) for backward compatibility only —
+    # scheduling now happens through the related ProgramSchedule "time slots" below,
+    # so one Program can air at several different times without duplicating the
+    # whole program entry.
+    start_time = models.TimeField(blank=True, null=True)
+    end_time = models.TimeField(blank=True, null=True)
+    days = models.CharField(max_length=20, choices=DAY_CHOICES, default='daily', blank=True)
     is_live = models.BooleanField(default=False)
     category = models.CharField(max_length=100, blank=True)
     image = models.ImageField(upload_to='programs/images/', blank=True, null=True)
@@ -127,10 +131,10 @@ class Program(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        ordering = ['order', 'start_time']
+        ordering = ['order', 'title']
     
     def __str__(self):
-        return f"{self.title} ({self.get_days_display()})"
+        return self.title
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -138,8 +142,10 @@ class Program(models.Model):
         super().save(*args, **kwargs)
     
     def get_duration(self):
-        """Calculate program duration in hours"""
+        """Calculate legacy single-slot program duration in hours (kept for backward compat)."""
         from datetime import datetime, timedelta
+        if not self.start_time or not self.end_time:
+            return ""
         start = datetime.combine(datetime.today(), self.start_time)
         end = datetime.combine(datetime.today(), self.end_time)
         if end < start:
@@ -150,8 +156,78 @@ class Program(models.Model):
         return f"{hours}h {minutes}m"
     
     def get_days_display(self):
-        """Return the display value for days."""
+        """Return the display value for the legacy days field."""
         return dict(self.DAY_CHOICES).get(self.days, self.days)
+
+    # Concrete weekdays a given `days` choice value expands to.
+    WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+    WEEKENDS = ['saturday', 'sunday']
+    ALL_DAYS = WEEKDAYS + WEEKENDS
+
+    @classmethod
+    def expand_days(cls, days_value):
+        """Turn 'daily' / 'weekdays' / 'weekends' / a single day into a list of
+        concrete weekday keys ('monday', 'tuesday', ...)."""
+        if days_value == 'daily':
+            return list(cls.ALL_DAYS)
+        if days_value == 'weekdays':
+            return list(cls.WEEKDAYS)
+        if days_value == 'weekends':
+            return list(cls.WEEKENDS)
+        if days_value in cls.ALL_DAYS:
+            return [days_value]
+        return []
+
+
+class ProgramSchedule(models.Model):
+    """A single air-time slot for a Program.
+
+    This is what lets one program (e.g. "Habari") be entered once — title,
+    host, description, image — and then broadcast at several different times
+    (e.g. 06:00-06:20 and again at 07:00-07:30) by simply adding more slots,
+    instead of duplicating the whole Program.
+    """
+    program = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='schedules')
+    days = models.CharField(max_length=20, choices=Program.DAY_CHOICES, default='daily',
+                             help_text="Choose 'Weekdays' for Mon-Fri, 'Weekends' for Sat-Sun, "
+                                       "'Daily' for every day, or a single day.")
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    is_live = models.BooleanField(default=False, help_text="Broadcast live during this slot")
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'start_time']
+        verbose_name = "Time Slot"
+        verbose_name_plural = "Time Slots"
+
+    def __str__(self):
+        return f"{self.program.title} — {self.get_days_display()} {self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}"
+
+    def get_days_display(self):
+        return dict(Program.DAY_CHOICES).get(self.days, self.days)
+
+    def get_duration(self):
+        """Calculate slot duration, e.g. '1h 30m'."""
+        from datetime import datetime, timedelta
+        start = datetime.combine(datetime.today(), self.start_time)
+        end = datetime.combine(datetime.today(), self.end_time)
+        if end < start:
+            end += timedelta(days=1)
+        duration = end - start
+        hours = duration.seconds // 3600
+        minutes = (duration.seconds % 3600) // 60
+        if hours and minutes:
+            return f"{hours}h {minutes}m"
+        if hours:
+            return f"{hours}h"
+        return f"{minutes}m"
+
+    def expanded_days(self):
+        """Concrete weekday keys this slot airs on."""
+        return Program.expand_days(self.days)
 
 class LiveStream(models.Model):
     """Live stream configuration"""

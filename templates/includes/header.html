@@ -26,6 +26,9 @@
               <li class="menu-item {% if 'radio' in request.path %}current-menu-item{% endif %}">
                 <a href="{% url 'live_stream' %}">Listen Live</a>
               </li>
+              <li class="menu-item {% if 'programs' in request.path %}current-menu-item{% endif %}">
+                <a href="{% url 'programs' %}">Programs</a>
+              </li>
               <li class="menu-item {% if 'contact' in request.path %}current-menu-item{% endif %}">
                 <a href="{% url 'contact' %}">Contact</a>
               </li>
@@ -64,8 +67,8 @@
           <li class="menu-item"><a href="{% url 'home' %}">Home</a></li>
           <li class="menu-item"><a href="{% url 'about' %}">Who We Are</a></li>
           <li class="menu-item"><a href="{% url 'live_stream' %}">Listen Live</a></li>
-          <!-- <li class="menu-item"><a href="{% url 'programs' %}">Programs</a></li>
-          <li class="menu-item"><a href="{% url 'news_list' %}">News</a></li> -->
+          <li class="menu-item"><a href="{% url 'programs' %}">Programs</a></li>
+          <!-- <li class="menu-item"><a href="{% url 'news_list' %}">News</a></li> -->
           <li class="menu-item"><a href="{% url 'contact' %}">Contact</a></li>
         </ul>
       </nav>

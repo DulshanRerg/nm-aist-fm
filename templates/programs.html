@@ -1,27 +1,327 @@
 {% extends "base.html" %}
+{% load static %}
+{% load schedule_extras %}
+
+{% block title %}Programs Schedule — {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .schedule-header {
+        margin-bottom: 0;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: 130px 20px 50px;
+        color: white;
+        text-align: center;
+        background: linear-gradient(rgba(10,22,40,0.88), rgba(10,22,40,0.88)), url('{% static "images/Untitled-design.png" %}');
+        background-size: cover;
+        background-position: center;
+    }
+    .schedule-header p { color: var(--gray-400); margin-top: 8px; }
+
+    .schedule-wrapper {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 48px 24px 90px;
+    }
+
+    /* ── Day tabs ─────────────────────────────────────── */
+    .day-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 40px;
+    }
+    .day-tab {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 12px 22px;
+        border-radius: 50px;
+        border: 2px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.04);
+        color: var(--gray-400);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .day-tab:hover {
+        border-color: var(--gold);
+        color: var(--white);
+    }
+    .day-tab.active {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--navy);
+        box-shadow: 0 4px 16px rgba(232,168,32,0.35);
+    }
+    .day-tab .today-dot {
+        display: inline-block;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #ff4444;
+        margin-left: 6px;
+        vertical-align: middle;
+    }
+
+    /* ── Schedule grid: 4 cards per row ───────────────── */
+    .schedule-day-panel { display: none; }
+    .schedule-day-panel.active { display: block; }
+
+    .schedule-empty {
+        text-align: center;
+        color: var(--gray-400);
+        padding: 60px 20px;
+        font-size: 1.1rem;
+    }
+
+    .schedule-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    .schedule-card {
+        background: var(--navy-mid);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: var(--transition);
+        position: relative;
+    }
+    .schedule-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow-lift);
+        border-color: var(--gold);
+    }
+
+    .schedule-card.is-live-now {
+        border-color: #ff4444;
+        box-shadow: 0 0 0 1px #ff4444, var(--shadow-card);
+    }
+
+    .schedule-card-media {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--navy-light), var(--crimson));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .schedule-card-media img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+    }
+    .schedule-card-media .fallback-letter {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 900;
+        color: rgba(255,255,255,0.85);
+    }
+
+    .schedule-time-badge {
+        position: absolute;
+        top: 12px; left: 12px;
+        background: rgba(10,22,40,0.85);
+        backdrop-filter: blur(4px);
+        color: var(--gold-light);
+        font-family: 'DM Mono', monospace;
+        font-size: 12.5px;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 50px;
+        border: 1px solid rgba(232,168,32,0.4);
+    }
+
+    .schedule-live-badge {
+        position: absolute;
+        top: 12px; right: 12px;
+        background: #ff4444;
+        color: white;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        padding: 5px 10px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .schedule-live-badge .dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: white;
+        animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%{opacity:1;} 50%{opacity:0.2;} 100%{opacity:1;} }
+
+    .schedule-card-body {
+        padding: 18px 18px 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .schedule-card-body h4 {
+        font-size: 1.15rem;
+        margin-bottom: 6px;
+        line-height: 1.3;
+    }
+    .schedule-card-category {
+        display: inline-block;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 8px;
+    }
+    .schedule-card-host {
+        font-size: 0.85rem;
+        color: var(--gray-400);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .schedule-card-desc {
+        font-size: 0.88rem;
+        color: rgba(232,228,220,0.75);
+        line-height: 1.55;
+        margin-top: auto;
+    }
+
+    @media (max-width: 1100px) {
+        .schedule-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 820px) {
+        .schedule-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) {
+        .schedule-grid { grid-template-columns: 1fr; }
+        .schedule-header { padding: 110px 16px 40px; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
 
-    <h3 class="section-title">Programs Schedule</h3>
+<div class="schedule-header">
+    <h1>Programs Schedule</h1>
+    <p>Browse what's on air any day of the week — pick a day below.</p>
+</div>
 
-    <table class="table table-striped">
-        <tr style="background:#F6C21E; color:#0A0A0A;">
-            <th>Program</th>
-            <th>Host</th>
-            <th>Day</th>
-            <th>Time</th>
-        </tr>
+<div class="schedule-wrapper">
 
-        {% for p in schedule %}
-        <tr>
-            <td>{{ p.name }}</td>
-            <td>{{ p.host }}</td>
-            <td>{{ p.day }}</td>
-            <td>{{ p.start_time }} – {{ p.end_time }}</td>
-        </tr>
+    <div class="day-tabs" role="tablist">
+        {% for day_key, day_label in day_tabs %}
+        <button type="button"
+                class="day-tab{% if day_key == today %} active{% endif %}"
+                data-day="{{ day_key }}"
+                role="tab"
+                aria-selected="{% if day_key == today %}true{% else %}false{% endif %}">
+            {{ day_label }}
+            {% if day_key == today %}<span class="today-dot" title="Today"></span>{% endif %}
+        </button>
         {% endfor %}
-    </table>
+    </div>
+
+    {% for day_key, day_label in day_tabs %}
+    <div class="schedule-day-panel{% if day_key == today %} active{% endif %}" data-day-panel="{{ day_key }}">
+        {% with day_slots=schedule_by_day|get_item:day_key %}
+        {% if day_slots %}
+        <div class="schedule-grid">
+            {% for slot in day_slots %}
+            <div class="schedule-card"
+                 data-start="{{ slot.start_time }}"
+                 data-end="{{ slot.end_time }}"
+                 data-day="{{ day_key }}">
+                <div class="schedule-card-media">
+                    {% if slot.image_url %}
+                        <img src="{{ slot.image_url }}" alt="{{ slot.title }}" loading="lazy">
+                    {% else %}
+                        <span class="fallback-letter">{{ slot.title|first|upper }}</span>
+                    {% endif %}
+                    <span class="schedule-time-badge">{{ slot.start_time }} – {{ slot.end_time }}</span>
+                    {% if slot.is_live %}
+                    <span class="schedule-live-badge"><span class="dot"></span>LIVE</span>
+                    {% endif %}
+                </div>
+                <div class="schedule-card-body">
+                    {% if slot.category %}<span class="schedule-card-category">{{ slot.category }}</span>{% endif %}
+                    <h4>{{ slot.title }}</h4>
+                    <div class="schedule-card-host">
+                        <i class="fas fa-user"></i> {{ slot.host|default:"TBA" }}
+                    </div>
+                    <p class="schedule-card-desc">{{ slot.description|truncatewords:14 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="schedule-empty">No programs scheduled for {{ day_label }} yet.</p>
+        {% endif %}
+        {% endwith %}
+    </div>
+    {% endfor %}
 
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var tabs = document.querySelectorAll('.day-tab');
+    var panels = document.querySelectorAll('.schedule-day-panel');
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            var day = tab.getAttribute('data-day');
+
+            tabs.forEach(function (t) {
+                t.classList.toggle('active', t === tab);
+                t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+            });
+            panels.forEach(function (p) {
+                p.classList.toggle('active', p.getAttribute('data-day-panel') === day);
+            });
+        });
+    });
+
+    // Highlight the card that is airing right now (only meaningful on today's panel)
+    var todayKey = "{{ today }}";
+    function timeToMinutes(str) {
+        var parts = str.split(':');
+        return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    }
+    function markLiveNow() {
+        var now = new Date();
+        var nowMinutes = now.getHours() * 60 + now.getMinutes();
+        var cards = document.querySelectorAll('.schedule-card[data-day="' + todayKey + '"]');
+        cards.forEach(function (card) {
+            var start = timeToMinutes(card.getAttribute('data-start'));
+            var end = timeToMinutes(card.getAttribute('data-end'));
+            var isNow;
+            if (start <= end) {
+                isNow = nowMinutes >= start && nowMinutes < end;
+            } else {
+                // overnight slot
+                isNow = nowMinutes >= start || nowMinutes < end;
+            }
+            card.classList.toggle('is-live-now', isNow);
+        });
+    }
+    markLiveNow();
+    setInterval(markLiveNow, 60000);
+});
+</script>
 {% endblock %}

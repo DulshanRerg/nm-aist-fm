@@ -210,15 +210,129 @@
         margin-top: 40px;
         text-align: center;
     }
+    .current-program h3 { color: white; margin-bottom: 24px; }
+
+    .programs-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+        text-align: left;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
 
     .program-card {
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 10px;
-        box-shadow: 0px 3px 12px rgba(0,0,0,0.5);
-        display: inline-block;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-       
+        background: #12233e;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .program-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+        border-color: #FFD700;
+    }
+    .program-card.on-air-now {
+        border-color: #ff4444;
+        box-shadow: 0 0 0 1px #ff4444, 0 12px 28px rgba(0,0,0,0.45);
+    }
+
+    .program-card-media {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: linear-gradient(135deg, #16324f, #7e0404);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .program-card-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .program-card-media .fallback-letter {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.6rem;
+        font-weight: 900;
+        color: rgba(255,255,255,0.85);
+    }
+
+    .program-time-badge {
+        position: absolute;
+        top: 10px; left: 10px;
+        background: rgba(10,22,40,0.85);
+        backdrop-filter: blur(4px);
+        color: #FFD700;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        padding: 5px 11px;
+        border-radius: 50px;
+        border: 1px solid rgba(255,215,0,0.35);
+    }
+
+    .live-badge-small {
+        position: absolute;
+        top: 10px; right: 10px;
+        background: #ff4444;
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 4px 9px;
+        border-radius: 50px;
+        display: none;
+        align-items: center;
+        gap: 5px;
+    }
+    .program-card.on-air-now .live-badge-small {
+        display: inline-flex;
+    }
+    .live-badge-small .dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: white;
+        animation: blink 1s infinite;
+    }
+
+    .program-card-body {
+        padding: 16px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    .program-card-body h4 {
+        color: white;
+        font-size: 1.05rem;
+        margin: 0 0 6px;
+        line-height: 1.3;
+    }
+    .program-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.82rem;
+        color: #b7c2d1;
+        margin-bottom: 8px;
+    }
+    .program-desc {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.68);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    @media (max-width: 900px) {
+        .programs-list { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+        .programs-list { grid-template-columns: 1fr; }
     }
 
     .how-to-listen {
@@ -359,19 +473,20 @@
             {% if todays_slots %}
                 <div class="programs-list">
                     {% for slot in todays_slots %}
-                    <div class="program-card">
-                        <div class="program-time">
-                            <span class="start-time">{{ slot.start_time }}</span>
-                            <span class="time-separator">-</span>
-                            <span class="end-time">{{ slot.end_time }}</span>
+                    <div class="program-card" data-start="{{ slot.start_time }}" data-end="{{ slot.end_time }}">
+                        <div class="program-card-media">
+                            {% if slot.image_url %}
+                                <img src="{{ slot.image_url }}" alt="{{ slot.title }}" loading="lazy">
+                            {% else %}
+                                <span class="fallback-letter">{{ slot.title|first|upper }}</span>
+                            {% endif %}
+                            <span class="program-time-badge">{{ slot.start_time }} – {{ slot.end_time }}</span>
+                            <span class="live-badge-small"><span class="dot"></span>ON AIR</span>
                         </div>
-                        <div class="program-info">
+                        <div class="program-card-body">
                             <h4>{{ slot.title }}</h4>
                             <div class="program-meta">
                                 <span class="host"><i class="fas fa-user"></i> {{ slot.host|default:"TBA" }}</span>
-                                {% if slot.is_live %}
-                                <span class="live-badge-small"><i class="fas fa-broadcast-tower"></i> LIVE</span>
-                                {% endif %}
                             </div>
                             <p class="program-desc">{{ slot.description|truncatewords:15 }}</p>
                         </div>
@@ -391,6 +506,32 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Mark whichever today's program card is currently airing as "on air"
+    (function highlightOnAirProgram() {
+        function timeToMinutes(str) {
+            var parts = str.split(':');
+            return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+        }
+        function updateOnAir() {
+            var now = new Date();
+            var nowMinutes = now.getHours() * 60 + now.getMinutes();
+            document.querySelectorAll('.program-card[data-start]').forEach(function (card) {
+                var start = timeToMinutes(card.getAttribute('data-start'));
+                var end = timeToMinutes(card.getAttribute('data-end'));
+                var isNow;
+                if (start <= end) {
+                    isNow = nowMinutes >= start && nowMinutes < end;
+                } else {
+                    // overnight slot (e.g. 23:00-01:00)
+                    isNow = nowMinutes >= start || nowMinutes < end;
+                }
+                card.classList.toggle('on-air-now', isNow);
+            });
+        }
+        updateOnAir();
+        setInterval(updateOnAir, 60000);
+    })();
+
     // Elements
     const playBtn = document.getElementById('play-btn');
     const playIcon = document.getElementById('play-icon');

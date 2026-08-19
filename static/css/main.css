@@ -410,6 +410,63 @@ section { padding: 90px 0; }
   margin-bottom: 24px;
 }
 
+/* Team Section */
+.team-section {
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.team-title {
+    margin-bottom: 50px;
+}
+
+/* Grid Layout */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    justify-items: center;
+}
+
+/* Card */
+.team-card {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(232,168,32,0.25);
+}
+
+/* Image */
+.team-image {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    margin-bottom: 20px;
+}
+
+/* Name */
+.member-name {
+    color: var(--white);
+    margin-bottom: 8px;
+    font-size: 1.3rem;
+}
+
+/* Position / Role */
+.member-role {
+    color: var(--text-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
 /* ── FREQUENCIES ─────────────────────────────────────────── */
 .frequencies-section {
   background: var(--crimson);
